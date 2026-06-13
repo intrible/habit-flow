@@ -436,6 +436,44 @@
       padding: 28px;
     }
 
+    .quote-board {
+      display: grid;
+      gap: 14px;
+      padding: 20px 24px;
+    }
+
+    .quote-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .quote-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .quote-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      color: #314053;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    .quote-item .btn {
+      min-height: 32px;
+      padding: 0 10px;
+      font-style: normal;
+      font-size: 12px;
+    }
+
     .today-progress {
       display: grid;
       grid-template-columns: auto 1fr auto;
@@ -975,6 +1013,10 @@
         grid-template-columns: auto 1fr;
       }
 
+      .quote-form {
+        grid-template-columns: 1fr;
+      }
+
       .today-note {
         grid-column: 1 / -1;
       }
@@ -1011,6 +1053,7 @@
         <button class="nav-item active" type="button" data-view="dashboard"><span class="nav-icon">D</span><span>Dashboard</span></button>
         <button class="nav-item" type="button" data-view="weekly"><span class="nav-icon">W</span><span>Weekly</span></button>
         <button class="nav-item" type="button" data-view="monthly"><span class="nav-icon">M</span><span>Monthly</span></button>
+        <button class="nav-item" type="button" data-view="stats"><span class="nav-icon">S</span><span>Stats</span></button>
         <button class="nav-item" type="button" data-view="manage"><span class="nav-icon">G</span><span>Manage</span></button>
       </nav>
     </aside>
@@ -1020,7 +1063,7 @@
         <div>
           <p class="eyebrow">Daily habit system</p>
           <h1>Good <span id="dayPart">Day</span></h1>
-          <p class="subhead">Track your habits for today. Use the sidebar tabs for weekly, monthly, and manage views.</p>
+          <p class="subhead">Track your habits for today. Use the sidebar tabs for weekly, monthly, stats, and manage views.</p>
         </div>
         <section class="today-card" aria-label="Today summary">
           <p class="today-label">Today</p>
@@ -1035,11 +1078,27 @@
       <div class="shell">
       <section class="main">
         <div class="screen active" data-screen="dashboard">
+          <section class="panel quote-board">
+            <div class="section-title">
+              <div>
+                <h2>Just HERE</h2>
+                <p class="stat-label">Keep the words that help you show up today.</p>
+              </div>
+            </div>
+            <form class="quote-form" id="quoteForm">
+              <input id="quoteText" maxlength="140" placeholder="Add a quote" autocomplete="off" required>
+              <button class="btn btn-primary" type="submit">Add quote</button>
+            </form>
+            <div class="quote-list" id="quoteList"></div>
+          </section>
+
           <section class="panel today-board">
             <div class="today-progress" id="todayProgress"></div>
             <div class="today-list" id="todayList"></div>
           </section>
+        </div>
 
+        <div class="screen" data-screen="stats">
           <div class="stats" id="stats"></div>
 
           <section class="panel board">
@@ -1161,6 +1220,9 @@
       todayText: document.getElementById("todayText"),
       todayProgress: document.getElementById("todayProgress"),
       todayList: document.getElementById("todayList"),
+      quoteForm: document.getElementById("quoteForm"),
+      quoteText: document.getElementById("quoteText"),
+      quoteList: document.getElementById("quoteList"),
       habitForm: document.getElementById("habitForm"),
       habitName: document.getElementById("habitName"),
       palette: document.getElementById("palette"),
@@ -1198,6 +1260,17 @@
     function bindEvents() {
       els.navItems.forEach(item => {
         item.addEventListener("click", () => setView(item.dataset.view));
+      });
+
+      els.quoteForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const text = els.quoteText.value.trim().replace(/\s+/g, " ");
+        if (!text) return;
+        state.quotes.unshift({ id: makeId(), text });
+        els.quoteText.value = "";
+        saveState();
+        renderQuotes();
+        showToast("Quote added.");
       });
 
       els.habitForm.addEventListener("submit", event => {
@@ -1302,6 +1375,7 @@
     }
 
     function render() {
+      renderQuotes();
       renderTodayDashboard();
       renderHabitList();
       renderStats();
@@ -1323,10 +1397,35 @@
       if (currentView === "dashboard") renderTodayDashboard();
       if (currentView === "weekly") renderWeekly();
       if (currentView === "monthly") renderMonthly();
+      if (currentView === "stats") {
+        renderStats();
+        renderStreakSection();
+      }
       if (currentView === "manage") {
         renderHabitList();
         renderBackupMeta();
       }
+    }
+
+    function renderQuotes() {
+      if (!state.quotes.length) {
+        els.quoteList.innerHTML = `<div class="empty"><p>Add a quote that you want to see with your daily habits.</p></div>`;
+        return;
+      }
+      els.quoteList.innerHTML = state.quotes.map(quote => `
+        <div class="quote-item">
+          <span>"${escapeHtml(quote.text)}"</span>
+          <button class="btn btn-ghost js-remove-quote" type="button" data-id="${quote.id}">Remove</button>
+        </div>
+      `).join("");
+      els.quoteList.querySelectorAll(".js-remove-quote").forEach(button => {
+        button.addEventListener("click", () => {
+          state.quotes = state.quotes.filter(quote => quote.id !== button.dataset.id);
+          saveState();
+          renderQuotes();
+          showToast("Quote removed.");
+        });
+      });
     }
 
     function renderPalette() {
@@ -1864,12 +1963,12 @@
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { habits: [] };
+        if (!raw) return { habits: [], quotes: [] };
         const parsed = JSON.parse(raw);
-        if (!parsed || !Array.isArray(parsed.habits)) return { habits: [] };
+        if (!parsed || !Array.isArray(parsed.habits)) return { habits: [], quotes: [] };
         return normalizeStoredState(parsed);
       } catch (error) {
-        return { habits: [] };
+        return { habits: [], quotes: [] };
       }
     }
 
@@ -1923,6 +2022,12 @@
     function normalizeStoredState(candidate) {
       const habits = Array.isArray(candidate.habits) ? candidate.habits : [];
       return {
+        quotes: Array.isArray(candidate.quotes) ? candidate.quotes
+          .map(quote => ({
+            id: quote && quote.id ? quote.id : makeId(),
+            text: String(quote && quote.text ? quote.text : "").trim().slice(0, 140)
+          }))
+          .filter(quote => quote.text) : [],
         habits: habits.map((habit, index) => {
           const item = habit || {};
           const log = {};
