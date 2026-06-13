@@ -453,6 +453,10 @@
       gap: 8px;
     }
 
+    .quote-display .quote-item {
+      grid-template-columns: 1fr;
+    }
+
     .quote-item {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -650,6 +654,29 @@
       padding-bottom: 4px;
     }
 
+    .weekly-settings {
+      display: flex;
+      justify-content: flex-end;
+      margin: 0 0 14px;
+    }
+
+    .week-start-toggle {
+      display: inline-grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .week-start-toggle input {
+      width: 16px;
+      min-height: 16px;
+    }
+
     .weekly-grid {
       display: grid;
       grid-template-columns: minmax(170px, 1.4fr) repeat(7, minmax(44px, 1fr)) 86px;
@@ -711,6 +738,12 @@
       color: #fff;
       background: #dc2626;
       border-color: #b91c1c;
+    }
+
+    .cell .note-mark {
+      position: absolute;
+      top: -7px;
+      right: -7px;
     }
 
     .rate {
@@ -917,6 +950,25 @@
       margin-top: 10px;
     }
 
+    .note-editor {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 14px;
+      background: #fbfcfe;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .note-editor input {
+      min-height: 38px;
+      font-size: 13px;
+    }
+
+    .monthly-stats {
+      margin-bottom: 14px;
+    }
+
     .empty {
       padding: 26px;
       text-align: center;
@@ -1079,17 +1131,16 @@
       <section class="main">
         <div class="screen active" data-screen="dashboard">
           <section class="panel quote-board">
+	    <!--
             <div class="section-title">
               <div>
-                <h2>Just HERE</h2>
-                <p class="stat-label">Keep the words that help you show up today.</p>
+                <h2>Motivation</h2>
+                <p class="stat-label">A few words to keep in view today.</p>
               </div>
             </div>
-            <form class="quote-form" id="quoteForm">
-              <input id="quoteText" maxlength="140" placeholder="Add a quote" autocomplete="off" required>
-              <button class="btn btn-primary" type="submit">Add quote</button>
-            </form>
-            <div class="quote-list" id="quoteList"></div>
+	    -->
+            <div class="quote-list quote-display" id="dashboardQuoteList"></div>
+            
           </section>
 
           <section class="panel today-board">
@@ -1105,8 +1156,13 @@
             <div class="board-head">
               <div>
                 <h2>Habit streaks</h2>
-                <p class="stat-label">A clean streak card for every habit.</p>
+                <b class="stat-label">A clean streak card for every habit</b>
+                <p class="stat-label">*in-progress</p>
               </div>
+
+
+
+
               <div class="status-legend" aria-label="Status legend">
                 <span class="legend-pill"><span class="status-dot" style="--status-color:#facc15"></span>In progress</span>
                 <span class="legend-pill"><span class="status-dot" style="--status-color:#0f766e"></span>Done</span>
@@ -1120,22 +1176,69 @@
         <section class="panel board screen" data-screen="weekly">
           <div class="board-head">
             <div>
-              <h2>Weekly tracker</h2>
-              <p class="stat-label">Each row is a habit. Click a cell to move through in progress, done, failed, and open.</p>
+              <h2>Weekly Tracker</h2>
+               <p class="stat-label">We are what we repeatedly do. Excellence, then, is not an act, but a habit.</p> 
             </div>
+
+<p id="week-label"></p>
+
+<script>
+  function getWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+
+  const week = getWeekNumber(new Date());
+
+  const percent = Math.round((week * 100) / 52); // Added Math.round to avoid long decimals
+  document.getElementById('week-label').innerHTML = `<strong>Week ${week} (${percent}%)</strong>`;
+
+</script>
+
+
+
             <div class="tabs" role="tablist" aria-label="Week range">
               <button class="tab active" id="thisWeekTab" type="button">This week</button>
               <button class="tab" id="last7Tab" type="button">Last 7 days</button>
             </div>
           </div>
+          <div class="weekly-settings">
+            <label class="week-start-toggle">
+              <input id="startWeekSunday" type="checkbox">
+              <span>Sunday</span>
+            </label>
+          </div>
+
+
+
+          <section class="panel quote-board">
+	    <!--
+            <div class="section-title">
+              <div>
+                <h2>Motivation</h2>
+                <p class="stat-label">A few words to keep in view today.</p>
+              </div>
+            </div>
+	    -->
+            <div class="quote-list quote-display" id="dashboardQuoteList1"></div>
+            
+          </section>
+
+
+
           <div id="weeklyContent"></div>
+          <div id="weeklyInspector"></div>
         </section>
+
 
         <section class="panel board screen" data-screen="monthly">
           <div class="board-head">
             <div>
-              <h2>Monthly heatmap</h2>
-              <p class="stat-label">Overall mode shows total completion intensity. Individual mode lets you edit one habit day by day.</p>
+              <h2>Monthly Heatmap</h2>
+              <!-- <p class="stat-label">Overall mode shows total completion intensity. Individual mode lets you edit one habit day by day.</p> -->
             </div>
             <div class="month-controls">
               <button class="btn btn-ghost btn-icon" id="prevMonth" type="button" aria-label="Previous month">&lt;</button>
@@ -1144,6 +1247,7 @@
               <select id="monthMode" aria-label="Monthly heatmap mode"></select>
             </div>
           </div>
+          <div class="stats monthly-stats" id="monthStats"></div>
           <div id="monthContent"></div>
           <div class="inspector" id="inspector"></div>
         </section>
@@ -1164,6 +1268,18 @@
             <input id="importFile" type="file" accept="application/json,.json" hidden>
           </div>
           <div class="backup-meta" id="backupMeta"></div>
+
+          <div class="section-title" style="margin-top: 18px;">
+            <h2>Quotes</h2>
+          </div>
+          <form class="quote-form" id="quoteForm">
+            <input id="quoteText" maxlength="140" placeholder="Add a motivational quote" autocomplete="off" required>
+            <button class="btn btn-primary" type="submit">Add quote</button>
+          </form>
+          <div class="row" style="margin-bottom: 12px;">
+            <button class="btn btn-ghost" id="clearQuotes" type="button">Clear all quotes</button>
+          </div>
+          <div class="quote-list" id="quoteManagerList"></div>
 
           <div class="section-title" style="margin-top: 18px;">
             <h2>Add habit</h2>
@@ -1211,6 +1327,9 @@
     let selectedDate = toKey(new Date());
     let toastTimer = 0;
     let meta = loadMeta();
+    let weekStartsSunday = Boolean(meta.weekStartsSunday);
+    let weeklyNoteHabitId = "";
+    let weeklyNoteDate = "";
     let currentView = "dashboard";
 
     const els = {
@@ -1222,15 +1341,21 @@
       todayList: document.getElementById("todayList"),
       quoteForm: document.getElementById("quoteForm"),
       quoteText: document.getElementById("quoteText"),
-      quoteList: document.getElementById("quoteList"),
+      dashboardQuoteList: document.getElementById("dashboardQuoteList"),
+      dashboardQuoteList1: document.getElementById("dashboardQuoteList1"),
+
+      quoteManagerList: document.getElementById("quoteManagerList"),
+      clearQuotes: document.getElementById("clearQuotes"),
       habitForm: document.getElementById("habitForm"),
       habitName: document.getElementById("habitName"),
       palette: document.getElementById("palette"),
       habitList: document.getElementById("habitList"),
       stats: document.getElementById("stats"),
       weeklyContent: document.getElementById("weeklyContent"),
+      weeklyInspector: document.getElementById("weeklyInspector"),
       thisWeekTab: document.getElementById("thisWeekTab"),
       last7Tab: document.getElementById("last7Tab"),
+      startWeekSunday: document.getElementById("startWeekSunday"),
       streakContent: document.getElementById("streakContent"),
       markAllToday: document.getElementById("markAllToday"),
       clearToday: document.getElementById("clearToday"),
@@ -1242,6 +1367,7 @@
       nextMonth: document.getElementById("nextMonth"),
       monthTitle: document.getElementById("monthTitle"),
       monthMode: document.getElementById("monthMode"),
+      monthStats: document.getElementById("monthStats"),
       monthContent: document.getElementById("monthContent"),
       inspector: document.getElementById("inspector"),
       toast: document.getElementById("toast")
@@ -1250,8 +1376,8 @@
     init();
 
     function init() {
-      els.dayPart.textContent = getDayPart();
-      els.todayText.textContent = formatLongDate(new Date());
+      updateGreeting();
+      window.setInterval(updateGreeting, 60000);
       renderPalette();
       bindEvents();
       render();
@@ -1269,8 +1395,19 @@
         state.quotes.unshift({ id: makeId(), text });
         els.quoteText.value = "";
         saveState();
-        renderQuotes();
+        renderQuotes(dashboardQuoteList);
+	renderQuotes(dashboardQuoteList1);
         showToast("Quote added.");
+      });
+
+      els.clearQuotes.addEventListener("click", () => {
+        state.quotes = [];
+        saveState();
+
+renderQuotes(els.dashboardQuoteList);
+renderQuotes(els.dashboardQuoteList1);
+
+        showToast("Quotes cleared.");
       });
 
       els.habitForm.addEventListener("submit", event => {
@@ -1301,6 +1438,13 @@
 
       els.last7Tab.addEventListener("click", () => {
         weekMode = "last-7";
+        renderWeekly();
+      });
+
+      els.startWeekSunday.addEventListener("change", () => {
+        weekStartsSunday = els.startWeekSunday.checked;
+        meta.weekStartsSunday = weekStartsSunday;
+        saveMeta();
         renderWeekly();
       });
 
@@ -1375,7 +1519,9 @@
     }
 
     function render() {
-      renderQuotes();
+renderQuotes(els.dashboardQuoteList);
+renderQuotes(els.dashboardQuoteList1);
+
       renderTodayDashboard();
       renderHabitList();
       renderStats();
@@ -1406,27 +1552,97 @@
         renderBackupMeta();
       }
     }
-
-    function renderQuotes() {
+<!--
+    function renderQuotes(containerId = 'dashboardQuoteList') {
+      const list = document.getElementById(containerId);
       if (!state.quotes.length) {
-        els.quoteList.innerHTML = `<div class="empty"><p>Add a quote that you want to see with your daily habits.</p></div>`;
+        els.dashboardQuoteList.innerHTML = `<div class="empty"><p>Quotes</p></div>`;
+
+
+        els.quoteManagerList.innerHTML = `<div class="empty"><p>Add a quote </p></div>`;
+        els.clearQuotes.disabled = true;
         return;
       }
-      els.quoteList.innerHTML = state.quotes.map(quote => `
+      els.dashboardQuoteList.innerHTML = state.quotes.map(quote => `
+        <div class="quote-item">
+          <span>"${escapeHtml(quote.text)}"</span>
+        </div>
+      `).join("");
+      els.quoteManagerList.innerHTML = state.quotes.map(quote => `
         <div class="quote-item">
           <span>"${escapeHtml(quote.text)}"</span>
           <button class="btn btn-ghost js-remove-quote" type="button" data-id="${quote.id}">Remove</button>
         </div>
       `).join("");
-      els.quoteList.querySelectorAll(".js-remove-quote").forEach(button => {
+      els.clearQuotes.disabled = false;
+      els.quoteManagerList.querySelectorAll(".js-remove-quote").forEach(button => {
         button.addEventListener("click", () => {
           state.quotes = state.quotes.filter(quote => quote.id !== button.dataset.id);
           saveState();
-          renderQuotes();
+
+renderQuotes(els.dashboardQuoteList);
+renderQuotes(els.dashboardQuoteList1);
+
           showToast("Quote removed.");
         });
       });
     }
+-->
+
+
+
+
+
+
+function renderQuotes(container) {
+  if (!container) return;
+
+  if (!state.quotes.length) {
+    container.innerHTML = `<div class="empty"><p>Quotes</p></div>`;
+    els.quoteManagerList.innerHTML = `<div class="empty"><p>Add a quote</p></div>`;
+    els.clearQuotes.disabled = true;
+    return;
+  }
+
+  container.innerHTML = state.quotes.map(quote => `
+    <div class="quote-item">
+      <span>"${escapeHtml(quote.text)}"</span>
+    </div>
+  `).join("");
+
+  els.quoteManagerList.innerHTML = state.quotes.map(quote => `
+    <div class="quote-item">
+      <span>"${escapeHtml(quote.text)}"</span>
+      <button class="btn btn-ghost js-remove-quote"
+              type="button"
+              data-id="${quote.id}">
+        Remove
+      </button>
+    </div>
+  `).join("");
+
+  els.clearQuotes.disabled = false;
+
+  els.quoteManagerList
+    .querySelectorAll(".js-remove-quote")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        state.quotes = state.quotes.filter(
+          quote => quote.id !== button.dataset.id
+        );
+
+        saveState();
+
+        renderQuotes(els.dashboardQuoteList);
+        renderQuotes(els.dashboardQuoteList1);
+
+        showToast("Quote removed.");
+      });
+    });
+}
+
+
+
 
     function renderPalette() {
       els.palette.innerHTML = COLORS.map(color => {
@@ -1467,7 +1683,7 @@
             <div class="habit-icon">${escapeHtml(habit.name.slice(0, 1).toUpperCase())}</div>
             <div>
               <div class="habit-name">${escapeHtml(habit.name)}</div>
-              <div class="habit-meta">${currentStreak(habit)} day streak - ${statusText}</div>
+              <div class="habit-meta">${currentStreakLabel(habit)} day streak - ${statusText}</div>
             </div>
             <div class="today-actions">
               <button class="status-btn progress${status === "progress" ? " active" : ""}" type="button" data-id="${habit.id}" data-status="progress">In progress</button>
@@ -1497,7 +1713,7 @@
       }
 
       els.habitList.innerHTML = habits.map(habit => {
-        const current = currentStreak(habit);
+        const current = currentStreakLabel(habit);
         const total = Object.keys(habit.log).filter(key => getStatus(habit, key) === "done").length;
         const progress = Object.keys(habit.log).filter(key => getStatus(habit, key) === "progress").length;
         return `
@@ -1609,9 +1825,12 @@
       const habits = activeHabits();
       els.thisWeekTab.classList.toggle("active", weekMode === "this-week");
       els.last7Tab.classList.toggle("active", weekMode === "last-7");
+      els.startWeekSunday.checked = weekStartsSunday;
+      els.startWeekSunday.disabled = weekMode !== "this-week";
 
       if (!habits.length) {
         els.weeklyContent.innerHTML = `<div class="empty"><strong>Weekly heatmap is ready</strong><p>Add a habit and this board becomes a row-by-row success tracker.</p></div>`;
+        els.weeklyInspector.innerHTML = "";
         return;
       }
 
@@ -1629,7 +1848,8 @@
           const status = getStatus(habit, key);
           const statusClass = status ? ` ${status}` : "";
           const label = status ? STATUSES[status].short : "";
-          return `<button class="cell${statusClass}" type="button" style="--habit-color:${habit.color}" data-id="${habit.id}" data-date="${key}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}">${label}</button>`;
+          const noteMark = getNote(habit, key) ? '<span class="note-mark">N</span>' : "";
+          return `<button class="cell${statusClass}" type="button" style="--habit-color:${habit.color}" data-id="${habit.id}" data-date="${key}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}">${label}${noteMark}</button>`;
         }).join("");
         return `
           <div class="habit-row-name" style="--habit-color:${habit.color}"><span class="dot"></span><span>${escapeHtml(habit.name)}</span></div>
@@ -1641,8 +1861,28 @@
       els.weeklyContent.innerHTML = `<div class="weekly-wrap"><div class="weekly-grid">${header}${rows}</div></div>`;
       els.weeklyContent.querySelectorAll(".cell").forEach(cell => {
         cell.addEventListener("click", () => {
+          weeklyNoteHabitId = cell.dataset.id;
+          weeklyNoteDate = cell.dataset.date;
           cycleHabitDate(cell.dataset.id, cell.dataset.date);
         });
+      });
+      renderWeeklyNoteEditor();
+    }
+
+    function renderWeeklyNoteEditor() {
+      const habit = getHabit(weeklyNoteHabitId);
+      if (!habit || !weeklyNoteDate) {
+        els.weeklyInspector.innerHTML = "";
+        return;
+      }
+      els.weeklyInspector.innerHTML = `
+        <div class="note-editor">
+          <label for="weeklyNote">${escapeHtml(habit.name)} note - ${formatLongDate(parseKey(weeklyNoteDate))}</label>
+          <input id="weeklyNote" maxlength="180" value="${escapeHtml(getNote(habit, weeklyNoteDate))}" placeholder="Add a note for this day">
+        </div>
+      `;
+      els.weeklyInspector.querySelector("#weeklyNote").addEventListener("input", event => {
+        saveHabitDateNote(habit.id, weeklyNoteDate, event.target.value);
       });
     }
 
@@ -1658,7 +1898,7 @@
           <article class="streak-card" style="--habit-color:${habit.color}">
             <div class="streak-title"><span class="dot"></span><span>${escapeHtml(habit.name)}</span></div>
             <div class="streak-numbers">
-              <div class="mini-stat"><strong>${currentStreak(habit)}</strong><span>Current</span></div>
+              <div class="mini-stat"><strong>${currentStreakLabel(habit)}</strong><span>Current</span></div>
               <div class="mini-stat"><strong>${bestStreak(habit)}</strong><span>Best</span></div>
               <div class="mini-stat"><strong>${monthDone}</strong><span>This month</span></div>
             </div>
@@ -1676,6 +1916,7 @@
       els.monthMode.innerHTML = options.join("");
       if (monthMode !== "overall" && !getHabit(monthMode)) monthMode = "overall";
       els.monthMode.value = monthMode;
+      renderMonthlyStats(habits);
 
       if (!habits.length) {
         els.monthContent.innerHTML = `<div class="empty"><strong>Monthly heatmap is waiting</strong><p>Add habits to see overall and individual monthly patterns.</p></div>`;
@@ -1700,6 +1941,44 @@
         });
       });
       renderInspector();
+    }
+
+    function renderMonthlyStats(habits) {
+      if (!habits.length) {
+        els.monthStats.innerHTML = "";
+        return;
+      }
+      const selectedHabits = monthMode === "overall" ? habits : [getHabit(monthMode)].filter(Boolean);
+      const totalDays = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 0).getDate();
+      const totals = selectedHabits.reduce((summary, habit) => {
+        summary.done += getMonthStatusCount(monthCursor, habit, "done");
+        summary.progress += getMonthStatusCount(monthCursor, habit, "progress");
+        summary.failed += getMonthStatusCount(monthCursor, habit, "failed");
+        return summary;
+      }, { done: 0, progress: 0, failed: 0 });
+      const possible = totalDays * selectedHabits.length;
+      const stats = monthMode === "overall"
+        ? [
+            ["Habits", habits.length],
+            ["Done this month", totals.done],
+            ["In progress", totals.progress],
+            ["Failed", totals.failed],
+            ["Month success", possible ? `${Math.round(totals.done / possible * 100)}%` : "0%"]
+          ]
+        : [
+            ["Done days", totals.done],
+            ["In progress", totals.progress],
+            ["Failed days", totals.failed],
+            ["Month success", possible ? `${Math.round(totals.done / possible * 100)}%` : "0%"],
+            ["Best streak", `${bestStreak(selectedHabits[0])} days`]
+          ];
+
+      els.monthStats.innerHTML = stats.map(([label, value]) => `
+        <article class="stat">
+          <p class="stat-value">${value}</p>
+          <p class="stat-label">${label}</p>
+        </article>
+      `).join("");
     }
 
     function renderMonthDay(date, habits) {
@@ -1744,8 +2023,42 @@
     function renderInspector() {
       const habits = activeHabits();
       const date = parseKey(selectedDate);
-      if (!habits.length || monthMode !== "overall") {
+      if (!habits.length) {
         els.inspector.classList.remove("open");
+        return;
+      }
+      if (monthMode !== "overall") {
+        const habit = getHabit(monthMode);
+        if (!habit) {
+          els.inspector.classList.remove("open");
+          return;
+        }
+        const status = getStatus(habit, selectedDate);
+        const note = getNote(habit, selectedDate);
+        els.inspector.classList.add("open");
+        els.inspector.innerHTML = `
+          <div class="section-title">
+            <div>
+              <h3>${escapeHtml(habit.name)} - ${formatLongDate(date)}</h3>
+              <p class="stat-label">Update the status or add a note for this day.</p>
+            </div>
+          </div>
+          <div class="row">
+            <button class="status-btn progress${status === "progress" ? " active" : ""} js-month-status" type="button" data-status="progress">In progress</button>
+            <button class="status-btn done${status === "done" ? " active" : ""} js-month-status" type="button" data-status="done" style="--habit-color:${habit.color}">Done</button>
+            <button class="status-btn failed${status === "failed" ? " active" : ""} js-month-status" type="button" data-status="failed">Failed</button>
+          </div>
+          <div class="note-editor">
+            <label for="monthNote">${escapeHtml(habit.name)} note</label>
+            <input id="monthNote" maxlength="180" value="${escapeHtml(note)}" placeholder="Add a note for this day">
+          </div>
+        `;
+        els.inspector.querySelectorAll(".js-month-status").forEach(button => {
+          button.addEventListener("click", () => setHabitDateStatus(habit.id, selectedDate, button.dataset.status));
+        });
+        els.inspector.querySelector("#monthNote").addEventListener("input", event => {
+          saveHabitDateNote(habit.id, selectedDate, event.target.value);
+        });
         return;
       }
       const completed = habits.filter(habit => getStatus(habit, selectedDate) === "done").length;
@@ -1772,7 +2085,7 @@
                 <button class="btn ${status ? "btn-primary" : "btn-ghost"} js-inspect-toggle" type="button" data-id="${habit.id}" ${solid}>
                   ${escapeHtml(habit.name)} - ${label}
                 </button>
-                <span>${note ? escapeHtml(note) : "No note"}</span>
+                <input class="js-inspect-note" data-id="${habit.id}" maxlength="150" value="${escapeHtml(note)}" placeholder="Add a note">
               </div>
             `;
           }).join("")}
@@ -1780,6 +2093,9 @@
       `;
       els.inspector.querySelectorAll(".js-inspect-toggle").forEach(button => {
         button.addEventListener("click", () => cycleHabitDate(button.dataset.id, selectedDate));
+      });
+      els.inspector.querySelectorAll(".js-inspect-note").forEach(input => {
+        input.addEventListener("input", () => saveHabitDateNote(input.dataset.id, selectedDate, input.value));
       });
     }
 
@@ -1827,7 +2143,8 @@
     function getWeekDates() {
       const today = new Date();
       const start = stripTime(today);
-      start.setDate(today.getDate() - today.getDay());
+      const offset = weekStartsSunday ? today.getDay() : (today.getDay() + 6) % 7;
+      start.setDate(today.getDate() - offset);
       return Array.from({ length: 7 }, (_, index) => addDays(start, index));
     }
 
@@ -1871,14 +2188,25 @@
       return count;
     }
 
-    function currentStreak(habit) {
+    function getCurrentStreak(habit) {
       let streak = 0;
       let cursor = stripTime(new Date());
+      const provisional = getStatus(habit, toKey(cursor)) === "progress";
+      if (provisional) cursor = addDays(cursor, -1);
       while (getStatus(habit, toKey(cursor)) === "done") {
         streak += 1;
         cursor = addDays(cursor, -1);
       }
-      return streak;
+      return { streak, provisional };
+    }
+
+    function currentStreak(habit) {
+      return getCurrentStreak(habit).streak;
+    }
+
+    function currentStreakLabel(habit) {
+      const current = getCurrentStreak(habit);
+      return `${current.provisional ? "*" : ""}${current.streak}`;
     }
 
     function bestStreak(habit) {
@@ -2107,6 +2435,11 @@
 
     function formatShortDate(date) {
       return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    }
+
+    function updateGreeting() {
+      els.dayPart.textContent = getDayPart();
+      els.todayText.textContent = formatLongDate(new Date());
     }
 
     function getDayPart() {
