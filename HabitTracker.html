@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HabitFlow</title>
+  <title>HabitFlow v7.0</title>
   <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="16" fill="%230f766e"/%3E%3Cpath d="M18 18h8v11h12V18h8v28h-8V35H26v11h-8z" fill="white"/%3E%3Ccircle cx="48" cy="16" r="6" fill="%232563eb"/%3E%3C/svg%3E'>
   <style>
     :root {
@@ -1911,6 +1911,13 @@
         </div>
 
         <div class="screen" data-screen="stats">
+          <div class="stats-controls" style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+            <select id="statsPeriod" aria-label="Stats period" style="min-width:160px; padding:8px 12px; border-radius:var(--radius); border:1px solid var(--line); background:#fff; font-weight:600; font-size:14px; cursor:pointer; color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+              <option value="30-days" selected>Last 30 Days</option>
+              <option value="this-year">This Year</option>
+              <option value="365-days">Last 365 Days</option>
+            </select>
+          </div>
           <div class="stats" id="stats"></div>
           <div id="categoryStatsSection"></div>
           <div id="insightsSection"></div>
@@ -2151,6 +2158,7 @@
       categoryForm: document.getElementById("categoryForm"),
       categoryName: document.getElementById("categoryName"),
       categoryManageList: document.getElementById("categoryManageList"),
+      statsPeriod: document.getElementById("statsPeriod"),
       stats: document.getElementById("stats"),
       weeklyContent: document.getElementById("weeklyContent"),
       weeklyInspector: document.getElementById("weeklyInspector"),
@@ -2202,6 +2210,7 @@
       });
 
       els.clearQuotes.addEventListener("click", () => {
+        if (!confirm("Are you sure you want to clear all quotes?")) return;
         state.quotes = [];
         saveState();
         renderQuotes(els.dashboardQuoteList);
@@ -2317,6 +2326,10 @@
         renderMonthly();
       });
 
+      els.statsPeriod.addEventListener("change", () => {
+        renderStats();
+      });
+
       // Close count popover on outside click
       document.addEventListener("click", (e) => {
         if (activeCountPopover && !e.target.closest(".count-popover") && !e.target.closest(".cell-count-trigger")) {
@@ -2402,6 +2415,7 @@ function renderQuotes(container) {
     .querySelectorAll(".js-remove-quote")
     .forEach(button => {
       button.addEventListener("click", () => {
+        if (!confirm("Are you sure you want to remove this quote?")) return;
         state.quotes = state.quotes.filter(
           quote => quote.id !== button.dataset.id
         );
@@ -2420,17 +2434,49 @@ function renderQuotes(container) {
 
 
     function renderPalette() {
-      els.palette.innerHTML = COLORS.map(color => {
+      const isCustomSelected = !COLORS.includes(selectedColor);
+      let html = COLORS.map(color => {
         const active = color === selectedColor ? " active" : "";
         return `<button class="swatch${active}" type="button" style="background:${color}" data-color="${color}" aria-label="Choose ${color}"></button>`;
       }).join("");
 
-      els.palette.querySelectorAll(".swatch").forEach(button => {
+      // Custom swatch
+      const customActive = isCustomSelected ? " active" : "";
+      const customBg = isCustomSelected ? selectedColor : "conic-gradient(red, yellow, green, cyan, blue, magenta, red)";
+      const customTextContrast = isCustomSelected ? getContrastColor(selectedColor) : "#fff";
+      html += `
+        <button class="swatch${customActive} js-custom-swatch" type="button" style="background:${customBg}" title="Custom Color" aria-label="Custom Color">
+          <span style="font-size:16px; font-weight:bold; color:${customTextContrast}; display:flex; align-items:center; justify-content:center; height:100%; text-shadow:0 1px 2px rgba(0,0,0,0.5)">+</span>
+        </button>
+      `;
+      els.palette.innerHTML = html;
+
+      els.palette.querySelectorAll(".swatch:not(.js-custom-swatch)").forEach(button => {
         button.addEventListener("click", () => {
           selectedColor = button.dataset.color;
           renderPalette();
         });
       });
+
+      const customBtn = els.palette.querySelector(".js-custom-swatch");
+      if (customBtn) {
+        customBtn.addEventListener("click", () => {
+          let colorInput = document.getElementById("customColorInput");
+          if (!colorInput) {
+            colorInput = document.createElement("input");
+            colorInput.type = "color";
+            colorInput.id = "customColorInput";
+            colorInput.style.display = "none";
+            document.body.appendChild(colorInput);
+            colorInput.addEventListener("change", (e) => {
+              selectedColor = e.target.value;
+              renderPalette();
+            });
+          }
+          colorInput.value = isCustomSelected ? selectedColor : "#3b82f6";
+          colorInput.click();
+        });
+      }
     }
 
     function renderTodayDashboard() {
@@ -2450,9 +2496,17 @@ function renderQuotes(container) {
           const total = Object.keys(habit.log).filter(key => getStatus(habit, key) === "done").length;
           const progress = Object.keys(habit.log).filter(key => getStatus(habit, key) === "progress").length;
           const hasTarget = habit.target != null && habit.target >= 1;
+          const isCustomColor = !COLORS.includes(habit.color);
+          const customActive = isCustomColor ? " active" : "";
+          const customBg = isCustomColor ? habit.color : "conic-gradient(red, yellow, green, cyan, blue, magenta, red)";
+          const customTextContrast = isCustomColor ? getContrastColor(habit.color) : "#fff";
           const editPaletteHtml = COLORS.map(c =>
             `<button class="swatch js-edit-color${c === habit.color ? " active" : ""}" type="button" style="background:${c}" data-color="${c}" data-id="${habit.id}" aria-label="${c}"></button>`
-          ).join("");
+          ).join("") + `
+            <button class="swatch js-edit-color js-custom-edit-swatch${customActive}" type="button" style="background:${customBg}" data-color="${habit.color}" data-id="${habit.id}" title="Custom Color" aria-label="Custom Color">
+              <span style="font-size:16px; font-weight:bold; color:${customTextContrast}; display:flex; align-items:center; justify-content:center; height:100%; text-shadow:0 1px 2px rgba(0,0,0,0.5)">+</span>
+            </button>
+          `;
           const catOptions = `<option value="">Uncategorized</option>` + state.categories.map(c => `<option value="${c.id}"${habit.categoryId === c.id ? ' selected' : ''}>${escapeHtml(c.name)}</option>`).join('');
           return `
             <article class="habit-item" style="--habit-color:${habit.color}">
@@ -2558,13 +2612,52 @@ function renderQuotes(container) {
         });
       });
 
-      els.habitList.querySelectorAll(".js-edit-color").forEach(swatch => {
+      els.habitList.querySelectorAll(".js-edit-color:not(.js-custom-edit-swatch)").forEach(swatch => {
         swatch.addEventListener("click", () => {
           const habit = getHabit(swatch.dataset.id);
           if (!habit) return;
           const panel = document.getElementById(`edit-${swatch.dataset.id}`);
           panel.querySelectorAll(".js-edit-color").forEach(s => s.classList.remove("active"));
           swatch.classList.add("active");
+
+          // reset custom swatch back to conic gradient
+          const customSwatch = panel.querySelector(".js-custom-edit-swatch");
+          if (customSwatch) {
+            customSwatch.style.background = "conic-gradient(red, yellow, green, cyan, blue, magenta, red)";
+            customSwatch.dataset.color = habit.color;
+            const plusSpan = customSwatch.querySelector("span");
+            if (plusSpan) plusSpan.style.color = "#fff";
+          }
+        });
+      });
+
+      els.habitList.querySelectorAll(".js-custom-edit-swatch").forEach(swatch => {
+        swatch.addEventListener("click", () => {
+          const habit = getHabit(swatch.dataset.id);
+          if (!habit) return;
+          const panel = document.getElementById(`edit-${swatch.dataset.id}`);
+
+          let colorInput = document.getElementById(`customColorInputEdit-${habit.id}`);
+          if (!colorInput) {
+            colorInput = document.createElement("input");
+            colorInput.type = "color";
+            colorInput.id = `customColorInputEdit-${habit.id}`;
+            colorInput.style.display = "none";
+            document.body.appendChild(colorInput);
+            colorInput.addEventListener("change", (e) => {
+              const newColor = e.target.value;
+              swatch.style.background = newColor;
+              swatch.dataset.color = newColor;
+              const plusSpan = swatch.querySelector("span");
+              if (plusSpan) plusSpan.style.color = getContrastColor(newColor);
+
+              panel.querySelectorAll(".js-edit-color").forEach(s => s.classList.remove("active"));
+              swatch.classList.add("active");
+            });
+          }
+          const isCurrentlyCustom = !COLORS.includes(swatch.dataset.color);
+          colorInput.value = isCurrentlyCustom ? swatch.dataset.color : "#3b82f6";
+          colorInput.click();
         });
       });
 
@@ -2652,32 +2745,32 @@ function renderQuotes(container) {
       const completedToday = habits.filter(habit => getStatus(habit, today) === "done").length;
       const progressToday = habits.filter(habit => getStatus(habit, today) === "progress").length;
       const failedToday = habits.filter(habit => getStatus(habit, today) === "failed").length;
-      const weekDays = getWeekDates();
       
-      let weekPossible = 0;
-      let weekDone = 0;
+      const period = els.statsPeriod ? els.statsPeriod.value : "30-days";
+      const periodKeys = getPeriodKeys(period);
+
+      let periodPossible = 0;
+      let periodDone = 0;
       habits.forEach(habit => {
-        weekDays.forEach(date => {
-          const key = toKey(date);
+        periodKeys.forEach(key => {
           if (key >= habit.createdAt) {
-            weekPossible += 1;
+            periodPossible += 1;
             if (getStatus(habit, key) === "done") {
-              weekDone += 1;
+              periodDone += 1;
             }
           }
         });
       });
 
+      const periodSuccessRate = periodPossible ? Math.round(periodDone / periodPossible * 100) : 0;
       const best = habits.reduce((max, habit) => Math.max(max, bestStreak(habit)), 0);
-      const monthRate = getMonthRate(monthCursor, habits);
       const stats = [
         ["Active habits", habits.length],
         ["Done today", `${completedToday}/${habits.length || 0}`],
         ["In progress", progressToday],
         ["Failed today", failedToday],
-        ["Week success", weekPossible ? `${Math.round(weekDone / weekPossible * 100)}%` : "0%"],
-        ["Best streak", `${best} days`],
-        ["Month success", `${monthRate}%`]
+        [`${period === "30-days" ? "30 Days" : period === "this-year" ? "This Year" : "365 Days"} success`, `${periodSuccessRate}%`],
+        ["Best streak", `${best} days`]
       ];
 
       els.stats.innerHTML = stats.map(([label, value]) => `
@@ -2698,10 +2791,7 @@ function renderQuotes(container) {
             const catHabits = habits.filter(h => h.categoryId === cat.id);
             let catDone = 0;
             let catPossible = 0;
-            const first = startOfMonth(monthCursor);
-            const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
-            for (let day = 1; day <= totalDays; day += 1) {
-              const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+            periodKeys.forEach(key => {
               catHabits.forEach(habit => {
                 if (key >= habit.createdAt) {
                   catPossible += 1;
@@ -2710,7 +2800,7 @@ function renderQuotes(container) {
                   }
                 }
               });
-            }
+            });
             const catRate = catPossible ? Math.round(catDone / catPossible * 100) : 0;
             categoryCardsHtml += `
               <div class="category-stat-card" style="--cat-color: ${cat.color}">
@@ -2723,7 +2813,7 @@ function renderQuotes(container) {
                     <div class="category-progress-bar-fill" style="width: ${catRate}%"></div>
                   </div>
                   <div class="category-progress-label">
-                    <span>Month Success</span>
+                    <span>${period === "30-days" ? "30 Days" : period === "this-year" ? "This Year" : "365 Days"} Success</span>
                     <span class="category-progress-value">${catRate}%</span>
                   </div>
                 </div>
@@ -2736,10 +2826,7 @@ function renderQuotes(container) {
           if (uncategorizedHabits.length > 0) {
             let catDone = 0;
             let catPossible = 0;
-            const first = startOfMonth(monthCursor);
-            const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
-            for (let day = 1; day <= totalDays; day += 1) {
-              const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+            periodKeys.forEach(key => {
               uncategorizedHabits.forEach(habit => {
                 if (key >= habit.createdAt) {
                   catPossible += 1;
@@ -2748,7 +2835,7 @@ function renderQuotes(container) {
                   }
                 }
               });
-            }
+            });
             const catRate = catPossible ? Math.round(catDone / catPossible * 100) : 0;
             categoryCardsHtml += `
               <div class="category-stat-card" style="--cat-color: #64748b">
@@ -2761,7 +2848,7 @@ function renderQuotes(container) {
                     <div class="category-progress-bar-fill" style="width: ${catRate}%"></div>
                   </div>
                   <div class="category-progress-label">
-                    <span>Month Success</span>
+                    <span>${period === "30-days" ? "30 Days" : period === "this-year" ? "This Year" : "365 Days"} Success</span>
                     <span class="category-progress-value">${catRate}%</span>
                   </div>
                 </div>
@@ -2774,7 +2861,7 @@ function renderQuotes(container) {
               <div class="board-head">
                 <div>
                   <h2>Category Performance</h2>
-                  <p class="stat-label">Success rates and active counts by category for this month.</p>
+                  <p class="stat-label">Success rates and active counts by category for the selected period.</p>
                 </div>
               </div>
               <div class="category-stats-grid">${categoryCardsHtml}</div>
@@ -2783,7 +2870,7 @@ function renderQuotes(container) {
         }
       }
 
-      // Render Infographics & Milestones
+      // Render Infographics
       if (els.insightsSection) {
         if (!habits.length) {
           els.insightsSection.innerHTML = "";
@@ -2793,17 +2880,14 @@ function renderQuotes(container) {
           habits.forEach(habit => {
             let done = 0;
             let possible = 0;
-            const first = startOfMonth(monthCursor);
-            const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
-            for (let day = 1; day <= totalDays; day += 1) {
-              const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+            periodKeys.forEach(key => {
               if (key >= habit.createdAt) {
                 possible += 1;
                 if (getStatus(habit, key) === "done") {
                   done += 1;
                 }
               }
-            }
+            });
             const rate = possible ? Math.round(done / possible * 100) : 0;
             chartRowsHtml += `
               <div class="chart-bar-row">
@@ -2816,118 +2900,18 @@ function renderQuotes(container) {
             `;
           });
 
-          // 2. Achievements & Milestones
-          const milestones = [
-            { id: "spark", name: "Consistency Spark", target: 3, icon: "⚡", desc: "Achieve a 3-day streak on any active habit" },
-            { id: "builder", name: "Habit Builder", target: 7, icon: "🛠️", desc: "Achieve a 7-day streak on any active habit" },
-            { id: "force", name: "Unstoppable Force", target: 14, icon: "🔥", desc: "Achieve a 14-day streak on any active habit" },
-            { id: "master", name: "Habit Master", target: 30, icon: "👑", desc: "Achieve a 30-day streak on any active habit" }
-          ];
-
-          // Check unlocks
-          const unlockedSet = new Set();
-          milestones.forEach(m => {
-            const hasUnlocked = habits.some(h => bestStreak(h) >= m.target);
-            if (hasUnlocked) unlockedSet.add(m.id);
-          });
-
-          // Collect pacing alerts
-          let pacingAlerts = [];
-          habits.forEach(habit => {
-            const current = currentStreak(habit);
-            if (current > 0) {
-              let nextM = null;
-              let rem = 0;
-              if (current < 3) {
-                nextM = milestones[0];
-                rem = 3 - current;
-              } else if (current < 7) {
-                nextM = milestones[1];
-                rem = 7 - current;
-              } else if (current < 14) {
-                nextM = milestones[2];
-                rem = 14 - current;
-              } else if (current < 30) {
-                nextM = milestones[3];
-                rem = 30 - current;
-              }
-              if (nextM) {
-                pacingAlerts.push({
-                  habit,
-                  milestone: nextM,
-                  remaining: rem,
-                  current
-                });
-              }
-            }
-          });
-
-          // Sort pacing alerts so the closest to unlock is first
-          pacingAlerts.sort((a, b) => a.remaining - b.remaining);
-
-          let milestoneCardsHtml = "";
-          milestones.forEach(m => {
-            const isUnlocked = unlockedSet.has(m.id);
-            const isPacing = pacingAlerts.some(a => a.milestone.id === m.id);
-            const badgeClass = isUnlocked ? "unlocked" : (isPacing ? "pacing" : "");
-            const badgeIcon = isUnlocked ? "✔" : m.icon;
-            milestoneCardsHtml += `
-              <div class="milestone-card">
-                <div class="milestone-badge ${badgeClass}">${badgeIcon}</div>
-                <div class="milestone-info">
-                  <div class="milestone-name">${m.name}</div>
-                  <div class="milestone-desc">${m.desc}</div>
-                </div>
-              </div>
-            `;
-          });
-
-          let pacingBoxHtml = "";
-          if (pacingAlerts.length > 0) {
-            const top = pacingAlerts[0];
-            pacingBoxHtml = `
-              <div class="milestone-pacing-alert">
-                <strong>🎯 Unlock Forecast:</strong> Keep going! If you maintain your current streak on <strong>"${escapeHtml(top.habit.name)}"</strong> for <strong>${top.remaining} more day${top.remaining === 1 ? '' : 's'}</strong>, you will unlock the <strong>"${top.milestone.name}"</strong> achievement!
-              </div>
-            `;
-            
-            // Add a sub-list of other active streaks pacing if there's more than one
-            if (pacingAlerts.length > 1) {
-              const others = pacingAlerts.slice(1).map(alert => 
-                `<li><strong>"${escapeHtml(alert.habit.name)}"</strong> needs ${alert.remaining} more day${alert.remaining === 1 ? '' : 's'} for "${alert.milestone.name}"</li>`
-              ).join("");
-              pacingBoxHtml += `
-                <div style="font-size:11px; margin-top: 8px; color: #b45309; font-weight:600;">
-                  Other active streaks:
-                  <ul style="margin:4px 0 0 16px; padding:0;">${others}</ul>
-                </div>
-              `;
-            }
-          } else {
-            pacingBoxHtml = `
-              <div class="milestone-pacing-alert" style="background:#f1f5f9; border-color:#94a3b8; color:#475569;">
-                No active streaks currently pacing toward achievements. Complete a habit today to start a new streak!
-              </div>
-            `;
-          }
-
           els.insightsSection.innerHTML = `
             <section class="panel board" style="margin-top: 18px;">
               <div class="board-head">
                 <div>
-                  <h2>Habit Insights & Achievements</h2>
-                  <p class="stat-label">Visual success metrics and achievement pacing.</p>
+                  <h2>Habit Performance Infographics</h2>
+                  <p class="stat-label">Visual success metrics for the selected period.</p>
                 </div>
               </div>
-              <div class="insights-container">
-                <div class="infographic-panel">
-                  <div class="infographic-title">Monthly Success Bar Chart</div>
+              <div class="insights-container" style="grid-template-columns: 1fr;">
+                <div class="infographic-panel" style="width: 100%;">
+                  <div class="infographic-title">${period === "30-days" ? "Last 30 Days" : period === "this-year" ? "This Year" : "Last 365 Days"} Success Bar Chart</div>
                   <div class="chart-bar-list">${chartRowsHtml}</div>
-                </div>
-                <div class="milestones-panel">
-                  <div class="infographic-title">Achievement Milestones</div>
-                  <div class="milestone-list">${milestoneCardsHtml}</div>
-                  ${pacingBoxHtml}
                 </div>
               </div>
             </section>
@@ -3336,7 +3320,7 @@ function renderQuotes(container) {
       const textColor = isLocked ? "#9ca3af" : (status === "done" || status === "failed" ? "#fff" : "#18212f");
       const disabledAttr = isLocked ? "disabled" : "";
       return `
-        <button class="day${statusClass}" type="button" data-date="${key}" style="background:${statusColor}; color:${textColor}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}${isLocked ? " (Locked)" : ""}" ${disabledAttr}>
+        <button class="day${statusClass}" type="button" data-date="${key}" style="background:${statusColor}; color:${textColor}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}${isLocked ? " (Locked)" : ""}${note ? ' \nNote: ' + escapeHtml(note) : ""}" ${disabledAttr}>
           <span class="day-num">${date.getDate()}${isToday ? '<span class="today-mark"></span>' : ""}${note ? '<span class="note-mark">N</span>' : ""}</span>
           <span class="day-score">${isLocked ? "&mdash;" : (status ? STATUSES[status].short : "Open")}</span>
         </button>
@@ -3383,15 +3367,21 @@ function renderQuotes(container) {
           </div>` : ""}
           <div class="note-editor">
             <label for="monthNote">${escapeHtml(habit.name)} note</label>
-            <input id="monthNote" maxlength="180" value="${escapeHtml(note)}"${isLocked ? " disabled" : ""} placeholder="${isLocked ? "Cannot add notes before creation date" : "Add a note for this day"}">
+            <input id="monthNote" maxlength="180" value="${escapeHtml(note)}"${isLocked ? " disabled" : ""} placeholder="${isLocked ? "Cannot add notes before creation date" : "Add a note. Press Enter to save."}">
           </div>
         `;
         els.inspector.querySelectorAll(".js-month-status").forEach(button => {
           button.addEventListener("click", () => setHabitDateStatus(habit.id, selectedDate, button.dataset.status));
         });
         if (!isLocked) {
-          els.inspector.querySelector("#monthNote").addEventListener("input", event => {
-            saveHabitDateNote(habit.id, selectedDate, event.target.value);
+          const input = els.inspector.querySelector("#monthNote");
+          input.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+              const noteVal = input.value.trim();
+              saveHabitDateNote(habit.id, selectedDate, noteVal);
+              showToast(`Note saved for "${habit.name}" on ${formatShortDate(parseKey(selectedDate))}`);
+              render();
+            }
           });
           const incBtn = els.inspector.querySelector(".js-month-count-inc");
           const decBtn = els.inspector.querySelector(".js-month-count-dec");
@@ -3426,7 +3416,7 @@ function renderQuotes(container) {
                 <button class="btn ${status && !isLocked ? "btn-primary" : "btn-ghost"} js-inspect-toggle" type="button" data-id="${habit.id}" ${solid} ${disabledAttr}>
                   ${escapeHtml(habit.name)} - ${label}
                 </button>
-                <input class="js-inspect-note" data-id="${habit.id}" maxlength="150" value="${escapeHtml(note)}"${disabledAttr} placeholder="${isLocked ? "Locked" : "Add a note"}">
+                <input class="js-inspect-note" data-id="${habit.id}" maxlength="150" value="${escapeHtml(note)}"${disabledAttr} placeholder="${isLocked ? "Locked" : "Add a note. Press Enter to save."}">
               </div>
             `;
           }).join("")}
@@ -3436,7 +3426,15 @@ function renderQuotes(container) {
         button.addEventListener("click", () => cycleHabitDate(button.dataset.id, selectedDate));
       });
       els.inspector.querySelectorAll(".js-inspect-note:not([disabled])").forEach(input => {
-        input.addEventListener("input", () => saveHabitDateNote(input.dataset.id, selectedDate, input.value));
+        input.addEventListener("keydown", event => {
+          if (event.key === "Enter") {
+            const habit = getHabit(input.dataset.id);
+            const noteVal = input.value.trim();
+            saveHabitDateNote(input.dataset.id, selectedDate, noteVal);
+            showToast(`Note saved for "${habit ? habit.name : 'habit'}" on ${formatShortDate(parseKey(selectedDate))}`);
+            render();
+          }
+        });
       });
     }
 
@@ -3763,7 +3761,7 @@ function renderQuotes(container) {
           return {
             id: item.id || makeId(),
             name: String(item.name || `Habit ${index + 1}`).trim().slice(0, 36),
-            color: COLORS.includes(item.color) ? item.color : COLORS[index % COLORS.length],
+            color: (item.color && item.color.startsWith('#')) ? item.color : COLORS[index % COLORS.length],
             createdAt: item.createdAt || toKey(new Date()),
             archived: Boolean(item.archived),
             target,
@@ -3813,6 +3811,31 @@ function renderQuotes(container) {
 
     function daysBetween(a, b) {
       return Math.round((stripTime(b) - stripTime(a)) / 86400000);
+    }
+
+    function getPeriodKeys(period) {
+      const today = new Date();
+      const keys = [];
+      if (period === "30-days") {
+        const end = stripTime(today);
+        const start = addDays(end, -29);
+        for (let d = start; d <= end; d = addDays(d, 1)) {
+          keys.push(toKey(d));
+        }
+      } else if (period === "this-year") {
+        const end = stripTime(today);
+        const start = new Date(today.getFullYear(), 0, 1);
+        for (let d = start; d <= end; d = addDays(d, 1)) {
+          keys.push(toKey(d));
+        }
+      } else if (period === "365-days") {
+        const end = stripTime(today);
+        const start = addDays(end, -364);
+        for (let d = start; d <= end; d = addDays(d, 1)) {
+          keys.push(toKey(d));
+        }
+      }
+      return keys;
     }
 
     function formatLongDate(date) {
@@ -3893,6 +3916,17 @@ function renderQuotes(container) {
         parseInt(value.slice(4, 6), 16)
       ];
     }
+
+    function getContrastColor(hex) {
+      try {
+        const rgb = hexToRgb(hex);
+        if (rgb.some(isNaN)) return '#fff';
+        const yiq = ((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 114)) / 1000;
+        return (yiq >= 128) ? '#000' : '#fff';
+      } catch (e) {
+        return '#fff';
+      }
+    }
     // ── Category management ─────────────────────────
     function renderCategoryManageList() {
       if (!state.categories.length) {
@@ -3909,6 +3943,7 @@ function renderQuotes(container) {
 
       els.categoryManageList.querySelectorAll(".js-remove-category").forEach(btn => {
         btn.addEventListener("click", () => {
+          if (!confirm("Are you sure you want to remove this category? All habits in this category will become uncategorized.")) return;
           // Unassign habits from this category
           state.habits.forEach(h => { if (h.categoryId === btn.dataset.id) h.categoryId = null; });
           state.categories = state.categories.filter(c => c.id !== btn.dataset.id);
@@ -3933,9 +3968,17 @@ function renderQuotes(container) {
       const catOptions = `<option value="">Uncategorized</option>` + state.categories.map(c =>
         `<option value="${c.id}"${previewHabit.categoryId === c.id ? ' selected' : ''}>${escapeHtml(c.name)}</option>`
       ).join("");
+      const isCustomColor = !COLORS.includes(previewHabit.color);
+      const customActive = isCustomColor ? ' active' : '';
+      const customBg = isCustomColor ? previewHabit.color : "conic-gradient(red, yellow, green, cyan, blue, magenta, red)";
+      const customTextContrast = isCustomColor ? getContrastColor(previewHabit.color) : "#fff";
       const paletteHtml = COLORS.map(c =>
         `<button class="swatch js-preview-color${c === previewHabit.color ? ' active' : ''}" type="button" style="background:${c}" data-color="${c}"></button>`
-      ).join("");
+      ).join("") + `
+        <button class="swatch js-preview-color js-custom-preview-swatch${customActive}" type="button" style="background:${customBg}" data-color="${previewHabit.color}" title="Custom Color" aria-label="Custom Color">
+          <span style="font-size:16px; font-weight:bold; color:${customTextContrast}; display:flex; align-items:center; justify-content:center; height:100%; text-shadow:0 1px 2px rgba(0,0,0,0.5)">+</span>
+        </button>
+      `;
       els.previewPanel.innerHTML = `
         <div class="preview-heading">✨ Review before creating</div>
         <div class="preview-card">
@@ -3971,13 +4014,59 @@ function renderQuotes(container) {
       els.previewPanel.classList.add("open");
 
       // Color swatches
-      els.previewPanel.querySelectorAll(".js-preview-color").forEach(swatch => {
+      els.previewPanel.querySelectorAll(".js-preview-color:not(.js-custom-preview-swatch)").forEach(swatch => {
         swatch.addEventListener("click", () => {
           els.previewPanel.querySelectorAll(".js-preview-color").forEach(s => s.classList.remove("active"));
           swatch.classList.add("active");
           previewHabit.color = swatch.dataset.color;
+          
+          // reset custom swatch back to conic gradient
+          const customSwatch = els.previewPanel.querySelector(".js-custom-preview-swatch");
+          if (customSwatch) {
+            customSwatch.style.background = "conic-gradient(red, yellow, green, cyan, blue, magenta, red)";
+            customSwatch.dataset.color = previewHabit.color;
+            const plusSpan = customSwatch.querySelector("span");
+            if (plusSpan) plusSpan.style.color = "#fff";
+          }
+          
+          // Update the preview icon color
+          const icon = els.previewPanel.querySelector(".habit-icon");
+          if (icon) icon.style.background = previewHabit.color;
         });
       });
+
+      // Custom preview swatch binding
+      const customPreviewSwatch = els.previewPanel.querySelector(".js-custom-preview-swatch");
+      if (customPreviewSwatch) {
+        customPreviewSwatch.addEventListener("click", () => {
+          let colorInput = document.getElementById("customColorInputPreview");
+          if (!colorInput) {
+            colorInput = document.createElement("input");
+            colorInput.type = "color";
+            colorInput.id = "customColorInputPreview";
+            colorInput.style.display = "none";
+            document.body.appendChild(colorInput);
+            colorInput.addEventListener("change", (e) => {
+              const newColor = e.target.value;
+              customPreviewSwatch.style.background = newColor;
+              customPreviewSwatch.dataset.color = newColor;
+              const plusSpan = customPreviewSwatch.querySelector("span");
+              if (plusSpan) plusSpan.style.color = getContrastColor(newColor);
+
+              els.previewPanel.querySelectorAll(".js-preview-color").forEach(s => s.classList.remove("active"));
+              customPreviewSwatch.classList.add("active");
+              previewHabit.color = newColor;
+              
+              // Update the preview icon color
+              const icon = els.previewPanel.querySelector(".habit-icon");
+              if (icon) icon.style.background = newColor;
+            });
+          }
+          const isCurrentlyCustom = !COLORS.includes(customPreviewSwatch.dataset.color);
+          colorInput.value = isCurrentlyCustom ? customPreviewSwatch.dataset.color : "#3b82f6";
+          colorInput.click();
+        });
+      }
 
       // Confirm
       document.getElementById("confirmPreview").addEventListener("click", () => {
