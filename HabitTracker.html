@@ -372,7 +372,7 @@
 
     .habit-main {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto auto 1fr auto;
       gap: 10px;
       align-items: center;
     }
@@ -692,6 +692,115 @@
       text-align: center;
     }
 
+    .week-day-header {
+      cursor: pointer;
+      background: transparent;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+      padding: 5px 4px;
+      line-height: 1.4;
+      transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+    }
+
+    .week-day-header:hover {
+      background: #e7f3f1;
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .week-day-header.selected {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(15, 118, 110, .28);
+    }
+
+    .cell.col-selected {
+      box-shadow: 0 0 0 2px var(--accent), 0 4px 12px rgba(15, 118, 110, .15);
+      z-index: 1;
+    }
+
+    .cell.selected {
+      box-shadow: 0 0 0 2px var(--accent-2), 0 4px 12px rgba(37, 99, 235, .3);
+      z-index: 2;
+    }
+
+    .day-notes-panel {
+      margin-top: 14px;
+      padding: 18px 20px;
+      background: #fbfcfe;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      animation: fadeSlideIn .18s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .day-notes-panel h3 {
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .day-note-row {
+      display: grid;
+      gap: 5px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--habit-color, var(--accent));
+      transition: box-shadow .15s ease;
+    }
+
+    .day-note-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .day-note-row:hover {
+      box-shadow: 0 2px 10px rgba(24, 33, 47, .08);
+    }
+
+    .day-note-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .day-note-status-pill {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 9px;
+      border-radius: 999px;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .day-note-text {
+      font-size: 13px;
+      color: #314053;
+      font-style: italic;
+      padding-left: 18px;
+      line-height: 1.4;
+    }
+
+    .day-note-empty {
+      font-size: 12px;
+      color: var(--muted);
+      padding-left: 18px;
+    }
+
     .habit-row-name {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -715,7 +824,6 @@
       transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
     }
 
-    .cell:hover,
     .day:hover {
       transform: translateY(-1px);
       box-shadow: 0 10px 22px rgba(24, 33, 47, .12);
@@ -1023,6 +1131,150 @@
       line-height: 1.35;
     }
 
+    /* ── Hybrid count tracking ───────────────────────────── */
+    .count-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .count-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+
+    .count-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+      transition: background .14s ease, transform .14s ease;
+    }
+
+    .count-btn:hover {
+      background: #e7f3f1;
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .count-display {
+      min-width: 60px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .count-display .count-frac {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* ── Edit panel in Manage ─────────────────────────────── */
+    .edit-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 14px;
+      background: #f0faf9;
+      border: 1px solid #b2dedd;
+      border-radius: var(--radius);
+    }
+
+    .edit-panel.open {
+      display: grid;
+      gap: 10px;
+    }
+
+    .edit-panel .form {
+      margin-bottom: 0;
+    }
+
+    /* ── Dashboard day hero ───────────────────────────────── */
+    .day-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .day-hero-weekday {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .day-hero-number {
+      font-size: clamp(44px, 5.5vw, 72px);
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    .day-hero-month {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .day-hero-year {
+      display: inline;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .day-of-year {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 6px;
+      padding: 3px 10px;
+      background: var(--soft);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    .daily-context-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 10px 16px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 10%, #fff), transparent);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .daily-context-banner span {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
     @media (max-width: 980px) {
       .app {
         grid-template-columns: 1fr;
@@ -1092,6 +1344,521 @@
         grid-column: 1 / -1;
       }
     }
+
+    /* ── Green count dropdown on weekly cells ──────── */
+    .cell-wrap {
+      position: relative;
+      display: flex;
+      min-height: 38px;
+      border-radius: 7px;
+    }
+
+    .cell-wrap .cell {
+      flex: 1;
+      border-radius: 7px 0 0 7px;
+    }
+
+    .cell-count-trigger {
+      width: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #16a34a;
+      color: #fff;
+      font-size: 9px;
+      border: none;
+      cursor: pointer;
+      transition: background .15s ease;
+      border-radius: 0 7px 7px 0;
+      padding: 0;
+    }
+
+    .cell-count-trigger:hover {
+      background: #15803d;
+    }
+
+    .cell-wrap:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(24, 33, 47, .12);
+      z-index: 2;
+    }
+
+    .count-popover {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 140px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      z-index: 30;
+      display: grid;
+      gap: 6px;
+      animation: fadeSlideIn .15s ease;
+    }
+
+    .count-popover label {
+      font-size: 10px;
+    }
+
+    .count-popover input {
+      min-height: 32px;
+      padding: 4px 8px;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .count-popover .btn {
+      min-height: 28px;
+      font-size: 11px;
+    }
+
+    .cell.disabled-cell {
+      opacity: .3;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    /* ── Categories ───────────────────────────────── */
+    .category-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      margin-top: 4px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--cat-color, var(--accent)) 12%, #fff), transparent);
+      border-left: 3px solid var(--cat-color, var(--accent));
+      border-radius: 0 8px 8px 0;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--cat-color, var(--accent));
+    }
+
+    .category-dot-sm {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cat-color, var(--accent));
+      flex-shrink: 0;
+    }
+
+    .category-manage-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .category-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      border-left: 3px solid var(--cat-color, var(--accent));
+    }
+
+    .category-item-name {
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--cat-color, var(--accent)) 12%, #fff);
+      color: var(--cat-color, var(--accent));
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      margin-left: 6px;
+    }
+
+    /* ── Priority controls ────────────────────────── */
+    .priority-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .priority-btn {
+      width: 24px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef3f8;
+      border: 1px solid var(--line);
+      font-size: 9px;
+      font-weight: 900;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .12s ease, color .12s ease;
+      padding: 0;
+    }
+
+    .priority-btn:first-child {
+      border-radius: 4px 4px 0 0;
+    }
+
+    .priority-btn:last-child {
+      border-radius: 0 0 4px 4px;
+    }
+
+    .priority-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ── Preview panel ────────────────────────────── */
+    .preview-panel {
+      display: none;
+      margin-top: 12px;
+      padding: 18px;
+      background: linear-gradient(135deg, #f0faf9, #e7f3f1);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      animation: fadeSlideIn .2s ease;
+    }
+
+    .preview-panel.open {
+      display: grid;
+      gap: 12px;
+    }
+
+    .preview-heading {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .preview-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .preview-detail {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .preview-detail strong {
+      color: var(--ink);
+    }
+
+    .preview-field {
+      display: grid;
+      gap: 4px;
+    }
+
+    .preview-field label {
+      font-size: 11px;
+    }
+
+    .preview-field input,
+    .preview-field select {
+      min-height: 36px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+    .weekly-category-header {
+      grid-column: span 9;
+      font-size: 11px;
+      font-weight: 850;
+      color: var(--muted);
+      padding: 14px 0 6px 0;
+      border-bottom: 1px solid var(--line);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .weekly-category-header span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .weekly-category-header span::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cat-color, var(--accent));
+    }
+    .manage-category-header {
+      font-size: 11px;
+      font-weight: 850;
+      color: var(--muted);
+      margin-top: 18px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    /* ── Category Performance Stats ────────────────── */
+    .category-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .category-stat-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.02);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .category-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.05);
+    }
+    .category-stat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .category-stat-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .category-stat-title::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cat-color, var(--accent));
+    }
+    .category-stat-count {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+      background: var(--soft);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .category-progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .category-progress-bar-bg {
+      height: 8px;
+      background: var(--soft);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .category-progress-bar-fill {
+      height: 100%;
+      background: var(--cat-color, var(--accent));
+      border-radius: 999px;
+      transition: width .4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .category-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .category-progress-value {
+      color: var(--cat-color, var(--accent));
+      font-weight: 900;
+    }
+
+    /* ── Infographics & Insights ───────────────────── */
+    .insights-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    @media (min-width: 768px) {
+      .insights-container {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    .infographic-panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.02);
+    }
+    .infographic-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+    .chart-bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chart-bar-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 40px;
+      align-items: center;
+      gap: 12px;
+    }
+    .chart-bar-name {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--ink);
+    }
+    .chart-bar-outer {
+      height: 10px;
+      background: var(--soft);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .chart-bar-inner {
+      height: 100%;
+      border-radius: 5px;
+      transition: width .5s ease;
+    }
+    .chart-bar-percent {
+      font-size: 11px;
+      font-weight: 800;
+      text-align: right;
+      color: var(--muted);
+    }
+    
+    .milestones-panel {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.02);
+    }
+    .milestone-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .milestone-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform .12s ease;
+    }
+    .milestone-card:hover {
+      transform: scale(1.01);
+    }
+    .milestone-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      font-weight: 900;
+      border: 1.5px solid #e2e8f0;
+    }
+    .milestone-badge.unlocked {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+    .milestone-badge.pacing {
+      background: #fef9c3;
+      color: #a16207;
+      border-color: #fef08a;
+      animation: pulseMilestone 2.0s infinite;
+    }
+    @keyframes pulseMilestone {
+      0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+    }
+    .milestone-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .milestone-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .milestone-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+    .milestone-pacing-alert {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #fffbeb;
+      border-left: 3px solid #f59e0b;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #b45309;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -1112,18 +1879,16 @@
 
     <div class="content">
       <header class="topbar" id="dashboard">
-        <div>
-          <p class="eyebrow">Daily habit system</p>
-          <h1>Good <span id="dayPart">Day</span></h1>
-          <p class="subhead">Track your habits for today. Use the sidebar tabs for weekly, monthly, stats, and manage views.</p>
+        <div class="day-hero">
+          <p class="day-hero-weekday" id="dayHeroWeekday">Saturday</p>
+          <p class="day-hero-number" id="dayHeroNumber">13</p>
+          <p class="day-hero-month"><span id="dayHeroMonth">June</span> <span class="day-hero-year" id="dayHeroYear">2026</span></p>
+          <span class="day-of-year" id="dayOfYear">Day — of 365</span>
         </div>
         <section class="today-card" aria-label="Today summary">
           <p class="today-label">Today</p>
           <p class="today-date" id="todayText"></p>
-          <div class="row" style="margin-top: 12px;">
-            <button class="btn btn-primary" id="markAllToday" type="button">Complete all</button>
-            <button class="btn btn-ghost" id="clearToday" type="button">Clear today</button>
-          </div>
+
         </section>
       </header>
 
@@ -1143,16 +1908,14 @@
             
           </section>
 
-          <section class="panel today-board">
-            <div class="today-progress" id="todayProgress"></div>
-            <div class="today-list" id="todayList"></div>
-          </section>
         </div>
 
         <div class="screen" data-screen="stats">
           <div class="stats" id="stats"></div>
+          <div id="categoryStatsSection"></div>
+          <div id="insightsSection"></div>
 
-          <section class="panel board">
+          <section class="panel board" style="margin-top: 18px;">
             <div class="board-head">
               <div>
                 <h2>Habit streaks</h2>
@@ -1282,6 +2045,17 @@
           <div class="quote-list" id="quoteManagerList"></div>
 
           <div class="section-title" style="margin-top: 18px;">
+            <h2>Categories</h2>
+          </div>
+          <form class="form" id="categoryForm" style="margin-bottom:6px;">
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+              <input id="categoryName" maxlength="24" placeholder="New category name" autocomplete="off" required>
+              <button class="btn btn-primary" type="submit">Add category</button>
+            </div>
+          </form>
+          <div class="category-manage-list" id="categoryManageList"></div>
+
+          <div class="section-title" style="margin-top: 18px;">
             <h2>Add habit</h2>
           </div>
           <form class="form" id="habitForm">
@@ -1290,13 +2064,22 @@
               <input id="habitName" name="habitName" maxlength="36" placeholder="Example: Morning walk" autocomplete="off" required>
             </div>
             <div class="field">
+              <label for="habitTarget">Daily target count <span style="font-weight:400;text-transform:none;color:var(--muted);">(optional — e.g. 2 for Brush Teeth, 8 for Drink Water)</span></label>
+              <input id="habitTarget" type="number" min="1" max="999" placeholder="Leave empty for status-only tracking">
+            </div>
+            <div class="field">
+              <label for="habitCategory">Category</label>
+              <select id="habitCategory"><option value="">Uncategorized</option></select>
+            </div>
+            <div class="field">
               <span class="label">Color</span>
               <div class="palette" id="palette"></div>
             </div>
-            <button class="btn btn-primary" type="submit">Add habit</button>
+            <button class="btn btn-primary" type="submit">Preview &amp; Add</button>
           </form>
+          <div class="preview-panel" id="previewPanel"></div>
 
-          <div class="section-title">
+          <div class="section-title" style="margin-top:18px;">
             <h2>Habits</h2>
           </div>
           <div class="habit-list" id="habitList"></div>
@@ -1318,6 +2101,13 @@
     };
     const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const DEFAULT_CATEGORIES = [
+      { id: "cat-health", name: "Health & Fitness", color: "#16a34a" },
+      { id: "cat-productivity", name: "Productivity", color: "#2563eb" },
+      { id: "cat-learning", name: "Learning", color: "#7c3aed" },
+      { id: "cat-personal", name: "Personal", color: "#ea580c" }
+    ];
+    const CATEGORY_COLORS = ["#16a34a", "#2563eb", "#7c3aed", "#ea580c", "#0891b2", "#db2777", "#ca8a04", "#0f172a"];
 
     let state = loadState();
     let selectedColor = COLORS[0];
@@ -1330,26 +2120,37 @@
     let weekStartsSunday = Boolean(meta.weekStartsSunday);
     let weeklyNoteHabitId = "";
     let weeklyNoteDate = "";
+    let selectedWeekDate = "";
     let currentView = "dashboard";
+    let previewHabit = null;
+    let activeCountPopover = null;
 
     const els = {
       navItems: Array.from(document.querySelectorAll(".nav-item")),
       screens: Array.from(document.querySelectorAll(".screen")),
       dayPart: document.getElementById("dayPart"),
+      dayHeroWeekday: document.getElementById("dayHeroWeekday"),
+      dayHeroNumber: document.getElementById("dayHeroNumber"),
+      dayHeroMonth: document.getElementById("dayHeroMonth"),
+      dayHeroYear: document.getElementById("dayHeroYear"),
+      dayOfYear: document.getElementById("dayOfYear"),
       todayText: document.getElementById("todayText"),
-      todayProgress: document.getElementById("todayProgress"),
-      todayList: document.getElementById("todayList"),
       quoteForm: document.getElementById("quoteForm"),
       quoteText: document.getElementById("quoteText"),
       dashboardQuoteList: document.getElementById("dashboardQuoteList"),
       dashboardQuoteList1: document.getElementById("dashboardQuoteList1"),
-
       quoteManagerList: document.getElementById("quoteManagerList"),
       clearQuotes: document.getElementById("clearQuotes"),
       habitForm: document.getElementById("habitForm"),
       habitName: document.getElementById("habitName"),
+      habitTarget: document.getElementById("habitTarget"),
+      habitCategory: document.getElementById("habitCategory"),
       palette: document.getElementById("palette"),
       habitList: document.getElementById("habitList"),
+      previewPanel: document.getElementById("previewPanel"),
+      categoryForm: document.getElementById("categoryForm"),
+      categoryName: document.getElementById("categoryName"),
+      categoryManageList: document.getElementById("categoryManageList"),
       stats: document.getElementById("stats"),
       weeklyContent: document.getElementById("weeklyContent"),
       weeklyInspector: document.getElementById("weeklyInspector"),
@@ -1357,8 +2158,8 @@
       last7Tab: document.getElementById("last7Tab"),
       startWeekSunday: document.getElementById("startWeekSunday"),
       streakContent: document.getElementById("streakContent"),
-      markAllToday: document.getElementById("markAllToday"),
-      clearToday: document.getElementById("clearToday"),
+      categoryStatsSection: document.getElementById("categoryStatsSection"),
+      insightsSection: document.getElementById("insightsSection"),
       exportData: document.getElementById("exportData"),
       importData: document.getElementById("importData"),
       importFile: document.getElementById("importFile"),
@@ -1395,21 +2196,38 @@
         state.quotes.unshift({ id: makeId(), text });
         els.quoteText.value = "";
         saveState();
-        renderQuotes(dashboardQuoteList);
-	renderQuotes(dashboardQuoteList1);
+        renderQuotes(els.dashboardQuoteList);
+        renderQuotes(els.dashboardQuoteList1);
         showToast("Quote added.");
       });
 
       els.clearQuotes.addEventListener("click", () => {
         state.quotes = [];
         saveState();
-
-renderQuotes(els.dashboardQuoteList);
-renderQuotes(els.dashboardQuoteList1);
-
+        renderQuotes(els.dashboardQuoteList);
+        renderQuotes(els.dashboardQuoteList1);
         showToast("Quotes cleared.");
       });
 
+      // ── Category form ──────────────────────────────
+      els.categoryForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const name = els.categoryName.value.trim().replace(/\s+/g, " ");
+        if (!name) return;
+        if (state.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+          showToast("Category already exists.");
+          return;
+        }
+        const color = CATEGORY_COLORS[state.categories.length % CATEGORY_COLORS.length];
+        state.categories.push({ id: makeId(), name, color });
+        els.categoryName.value = "";
+        saveState();
+        renderCategoryManageList();
+        renderCategoryOptions();
+        showToast("Category added.");
+      });
+
+      // ── Habit form → preview step ──────────────────
       els.habitForm.addEventListener("submit", event => {
         event.preventDefault();
         const name = els.habitName.value.trim().replace(/\s+/g, " ");
@@ -1418,17 +2236,19 @@ renderQuotes(els.dashboardQuoteList1);
           showToast("That habit already exists.");
           return;
         }
-        state.habits.push({
+        const rawTarget = parseInt(els.habitTarget.value);
+        const target = (!isNaN(rawTarget) && rawTarget >= 1) ? Math.min(rawTarget, 999) : null;
+        const categoryId = els.habitCategory.value || null;
+        previewHabit = {
           id: makeId(),
           name,
           color: selectedColor,
           createdAt: toKey(new Date()),
+          target,
+          categoryId,
           log: {}
-        });
-        els.habitName.value = "";
-        saveState();
-        render();
-        showToast("Habit added.");
+        };
+        showPreview();
       });
 
       els.thisWeekTab.addEventListener("click", () => {
@@ -1446,26 +2266,6 @@ renderQuotes(els.dashboardQuoteList1);
         meta.weekStartsSunday = weekStartsSunday;
         saveMeta();
         renderWeekly();
-      });
-
-      els.markAllToday.addEventListener("click", () => {
-        const today = toKey(new Date());
-        activeHabits().forEach(habit => {
-          setLogStatus(habit, today, "done");
-        });
-        saveState();
-        render();
-        showToast("Today marked complete for all habits.");
-      });
-
-      els.clearToday.addEventListener("click", () => {
-        const today = toKey(new Date());
-        activeHabits().forEach(habit => {
-          setLogStatus(habit, today, "");
-        });
-        saveState();
-        render();
-        showToast("Today cleared.");
       });
 
       els.exportData.addEventListener("click", () => {
@@ -1516,12 +2316,18 @@ renderQuotes(els.dashboardQuoteList1);
         monthMode = els.monthMode.value;
         renderMonthly();
       });
+
+      // Close count popover on outside click
+      document.addEventListener("click", (e) => {
+        if (activeCountPopover && !e.target.closest(".count-popover") && !e.target.closest(".cell-count-trigger")) {
+          closeCountPopover();
+        }
+      });
     }
 
     function render() {
-renderQuotes(els.dashboardQuoteList);
-renderQuotes(els.dashboardQuoteList1);
-
+      renderQuotes(els.dashboardQuoteList);
+      renderQuotes(els.dashboardQuoteList1);
       renderTodayDashboard();
       renderHabitList();
       renderStats();
@@ -1529,6 +2335,8 @@ renderQuotes(els.dashboardQuoteList1);
       renderStreakSection();
       renderMonthly();
       renderBackupMeta();
+      renderCategoryManageList();
+      renderCategoryOptions();
       setView(currentView);
     }
 
@@ -1550,44 +2358,11 @@ renderQuotes(els.dashboardQuoteList1);
       if (currentView === "manage") {
         renderHabitList();
         renderBackupMeta();
+        renderCategoryManageList();
+        renderCategoryOptions();
       }
     }
-<!--
-    function renderQuotes(containerId = 'dashboardQuoteList') {
-      const list = document.getElementById(containerId);
-      if (!state.quotes.length) {
-        els.dashboardQuoteList.innerHTML = `<div class="empty"><p>Quotes</p></div>`;
 
-
-        els.quoteManagerList.innerHTML = `<div class="empty"><p>Add a quote </p></div>`;
-        els.clearQuotes.disabled = true;
-        return;
-      }
-      els.dashboardQuoteList.innerHTML = state.quotes.map(quote => `
-        <div class="quote-item">
-          <span>"${escapeHtml(quote.text)}"</span>
-        </div>
-      `).join("");
-      els.quoteManagerList.innerHTML = state.quotes.map(quote => `
-        <div class="quote-item">
-          <span>"${escapeHtml(quote.text)}"</span>
-          <button class="btn btn-ghost js-remove-quote" type="button" data-id="${quote.id}">Remove</button>
-        </div>
-      `).join("");
-      els.clearQuotes.disabled = false;
-      els.quoteManagerList.querySelectorAll(".js-remove-quote").forEach(button => {
-        button.addEventListener("click", () => {
-          state.quotes = state.quotes.filter(quote => quote.id !== button.dataset.id);
-          saveState();
-
-renderQuotes(els.dashboardQuoteList);
-renderQuotes(els.dashboardQuoteList1);
-
-          showToast("Quote removed.");
-        });
-      });
-    }
--->
 
 
 
@@ -1659,50 +2434,7 @@ function renderQuotes(container) {
     }
 
     function renderTodayDashboard() {
-      const habits = activeHabits();
-      const today = toKey(new Date());
-      const done = habits.filter(habit => getStatus(habit, today) === "done").length;
-      const rate = habits.length ? Math.round(done / habits.length * 100) : 0;
-      els.todayProgress.innerHTML = `
-        <span>${done} of ${habits.length} finished</span>
-        <span class="progress-track"><span class="progress-fill" style="width:${rate}%"></span></span>
-        <span>${rate}%</span>
-      `;
-
-      if (!habits.length) {
-        els.todayList.innerHTML = `<div class="empty"><strong>No habits yet</strong><p>Add your first habit from the sidebar.</p></div>`;
-        return;
-      }
-
-      els.todayList.innerHTML = habits.map(habit => {
-        const status = getStatus(habit, today);
-        const note = getNote(habit, today);
-        const statusText = status ? STATUSES[status].label : "Pending";
-        return `
-          <article class="today-habit" style="--habit-color:${habit.color}">
-            <div class="habit-icon">${escapeHtml(habit.name.slice(0, 1).toUpperCase())}</div>
-            <div>
-              <div class="habit-name">${escapeHtml(habit.name)}</div>
-              <div class="habit-meta">${currentStreakLabel(habit)} day streak - ${statusText}</div>
-            </div>
-            <div class="today-actions">
-              <button class="status-btn progress${status === "progress" ? " active" : ""}" type="button" data-id="${habit.id}" data-status="progress">In progress</button>
-              <button class="status-btn done${status === "done" ? " active" : ""}" type="button" data-id="${habit.id}" data-status="done">Done</button>
-              <button class="status-btn failed${status === "failed" ? " active" : ""}" type="button" data-id="${habit.id}" data-status="failed">Failed</button>
-            </div>
-            <input class="today-note" data-id="${habit.id}" value="${escapeHtml(note)}" placeholder="Add a note for today">
-          </article>
-        `;
-      }).join("");
-
-      els.todayList.querySelectorAll(".status-btn").forEach(button => {
-        button.addEventListener("click", () => setHabitDateStatus(button.dataset.id, today, button.dataset.status));
-      });
-
-      els.todayList.querySelectorAll(".today-note").forEach(input => {
-        input.addEventListener("input", () => saveHabitDateNote(input.dataset.id, today, input.value));
-        input.addEventListener("change", () => setHabitDateNote(input.dataset.id, today, input.value));
-      });
+      // Dashboard only shows quotes and day info — no habit entry
     }
 
     function renderHabitList() {
@@ -1712,44 +2444,166 @@ function renderQuotes(container) {
         return;
       }
 
-      els.habitList.innerHTML = habits.map(habit => {
-        const current = currentStreakLabel(habit);
-        const total = Object.keys(habit.log).filter(key => getStatus(habit, key) === "done").length;
-        const progress = Object.keys(habit.log).filter(key => getStatus(habit, key) === "progress").length;
-        return `
-          <article class="habit-item" style="--habit-color:${habit.color}">
-            <div class="habit-main">
-              <span class="dot"></span>
-              <div>
-                <div class="habit-name">${escapeHtml(habit.name)}</div>
-                <div class="habit-meta">${current} day streak - ${total} done - ${progress} in progress</div>
+      function renderHabitSublist(habitsSub) {
+        return habitsSub.map((habit, idx) => {
+          const current = currentStreakLabel(habit);
+          const total = Object.keys(habit.log).filter(key => getStatus(habit, key) === "done").length;
+          const progress = Object.keys(habit.log).filter(key => getStatus(habit, key) === "progress").length;
+          const hasTarget = habit.target != null && habit.target >= 1;
+          const editPaletteHtml = COLORS.map(c =>
+            `<button class="swatch js-edit-color${c === habit.color ? " active" : ""}" type="button" style="background:${c}" data-color="${c}" data-id="${habit.id}" aria-label="${c}"></button>`
+          ).join("");
+          const catOptions = `<option value="">Uncategorized</option>` + state.categories.map(c => `<option value="${c.id}"${habit.categoryId === c.id ? ' selected' : ''}>${escapeHtml(c.name)}</option>`).join('');
+          return `
+            <article class="habit-item" style="--habit-color:${habit.color}">
+              <div class="habit-main">
+                <div class="priority-controls">
+                  <button class="priority-btn js-move-up" type="button" data-id="${habit.id}" title="Move up"${idx === 0 ? ' disabled' : ''}>▲</button>
+                  <button class="priority-btn js-move-down" type="button" data-id="${habit.id}" title="Move down"${idx === habitsSub.length - 1 ? ' disabled' : ''}>▼</button>
+                </div>
+                <span class="dot"></span>
+                <div style="min-width:0;flex:1;">
+                  <div class="habit-name">${escapeHtml(habit.name)}${hasTarget ? '<span style="margin-left:6px;font-size:11px;font-weight:600;color:var(--muted);">(target: ' + habit.target + ')</span>' : ''}</div>
+                  <div class="habit-meta">${current} day streak &middot; ${total} done &middot; ${progress} in progress &middot; starts ${habit.createdAt}</div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-ghost btn-icon js-open-edit" type="button" data-id="${habit.id}" aria-label="Edit habit" title="Edit">✎</button>
+                  <button class="btn btn-ghost btn-icon js-open-delete" type="button" data-id="${habit.id}" aria-label="Delete habit" title="Delete">✕</button>
+                </div>
               </div>
-              <button class="btn btn-ghost btn-icon js-open-delete" type="button" data-id="${habit.id}" aria-label="Open delete steps">x</button>
-            </div>
-            <div class="delete-panel" id="delete-${habit.id}">
-              <strong>Delete ${escapeHtml(habit.name)}</strong>
-              <span class="habit-meta">This takes extra confirmation because all streak and heatmap history for this habit will be removed.</span>
-              <label class="field">
-                <span class="label">Type the habit name</span>
-                <input class="js-delete-name" data-id="${habit.id}" placeholder="${escapeHtml(habit.name)}">
-              </label>
-              <label class="checkline">
-                <input class="js-delete-check" data-id="${habit.id}" type="checkbox">
-                <span>I understand this permanently deletes the habit and its tracked days.</span>
-              </label>
-              <div class="row">
-                <button class="btn btn-danger js-confirm-delete" type="button" data-id="${habit.id}" disabled>Delete permanently</button>
-                <button class="btn btn-ghost js-cancel-delete" type="button" data-id="${habit.id}">Cancel</button>
+              <div class="edit-panel" id="edit-${habit.id}">
+                <strong style="font-size:13px;">Edit habit</strong>
+                <div class="form">
+                  <div class="field">
+                    <label>Name</label>
+                    <input class="js-edit-name" data-id="${habit.id}" maxlength="36" value="${escapeHtml(habit.name)}" placeholder="Habit name">
+                  </div>
+                  <div class="field">
+                    <label>Daily target count <span style="font-weight:400;text-transform:none;color:var(--muted);">(optional)</span></label>
+                    <input class="js-edit-target" data-id="${habit.id}" type="number" min="1" max="999" value="${hasTarget ? habit.target : ""}" placeholder="Leave empty for status-only">
+                  </div>
+                  <div class="field">
+                    <label>Category</label>
+                    <select class="js-edit-category" data-id="${habit.id}">${catOptions}</select>
+                  </div>
+                  <div class="field">
+                    <span class="label">Color</span>
+                    <div class="palette">${editPaletteHtml}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <button class="btn btn-primary js-save-edit" type="button" data-id="${habit.id}">Save changes</button>
+                  <button class="btn btn-ghost js-cancel-edit" type="button" data-id="${habit.id}">Cancel</button>
+                </div>
               </div>
-            </div>
-          </article>
-        `;
-      }).join("");
+              <div class="delete-panel" id="delete-${habit.id}">
+                <strong>Delete ${escapeHtml(habit.name)}</strong>
+                <span class="habit-meta">This takes extra confirmation because all streak and heatmap history for this habit will be removed.</span>
+                <label class="field">
+                  <span class="label">Type the habit name</span>
+                  <input class="js-delete-name" data-id="${habit.id}" placeholder="${escapeHtml(habit.name)}">
+                </label>
+                <label class="checkline">
+                  <input class="js-delete-check" data-id="${habit.id}" type="checkbox">
+                  <span>I understand this permanently deletes the habit and its tracked days.</span>
+                </label>
+                <div class="row">
+                  <button class="btn btn-danger js-confirm-delete" type="button" data-id="${habit.id}" disabled>Delete permanently</button>
+                  <button class="btn btn-ghost js-cancel-delete" type="button" data-id="${habit.id}">Cancel</button>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
 
+      let listHtml = "";
+      state.categories.forEach(cat => {
+        const catHabits = habits.filter(h => h.categoryId === cat.id);
+        if (catHabits.length > 0) {
+          listHtml += `<div class="manage-category-header" style="--cat-color: ${cat.color}">${escapeHtml(cat.name)}</div>`;
+          listHtml += renderHabitSublist(catHabits);
+        }
+      });
+
+      const uncategorized = habits.filter(h => !h.categoryId);
+      if (uncategorized.length > 0) {
+        listHtml += `<div class="manage-category-header" style="--cat-color: #64748b">Uncategorized</div>`;
+        listHtml += renderHabitSublist(uncategorized);
+      }
+
+      els.habitList.innerHTML = listHtml;
+
+      // ── Priority (move up/down) bindings
+      els.habitList.querySelectorAll(".js-move-up").forEach(btn => {
+        btn.addEventListener("click", () => moveHabit(btn.dataset.id, -1));
+      });
+      els.habitList.querySelectorAll(".js-move-down").forEach(btn => {
+        btn.addEventListener("click", () => moveHabit(btn.dataset.id, 1));
+      });
+
+      // ── Edit panel bindings
+      els.habitList.querySelectorAll(".js-open-edit").forEach(button => {
+        button.addEventListener("click", () => {
+          const editPanel = document.getElementById(`edit-${button.dataset.id}`);
+          const delPanel  = document.getElementById(`delete-${button.dataset.id}`);
+          if (delPanel) delPanel.classList.remove("open");
+          editPanel.classList.toggle("open");
+        });
+      });
+
+      els.habitList.querySelectorAll(".js-cancel-edit").forEach(button => {
+        button.addEventListener("click", () => {
+          document.getElementById(`edit-${button.dataset.id}`).classList.remove("open");
+        });
+      });
+
+      els.habitList.querySelectorAll(".js-edit-color").forEach(swatch => {
+        swatch.addEventListener("click", () => {
+          const habit = getHabit(swatch.dataset.id);
+          if (!habit) return;
+          const panel = document.getElementById(`edit-${swatch.dataset.id}`);
+          panel.querySelectorAll(".js-edit-color").forEach(s => s.classList.remove("active"));
+          swatch.classList.add("active");
+        });
+      });
+
+      els.habitList.querySelectorAll(".js-save-edit").forEach(button => {
+        button.addEventListener("click", () => {
+          const habit = getHabit(button.dataset.id);
+          if (!habit) return;
+          const panel = document.getElementById(`edit-${button.dataset.id}`);
+          const nameInput   = panel.querySelector(".js-edit-name");
+          const targetInput = panel.querySelector(".js-edit-target");
+          const catSelect   = panel.querySelector(".js-edit-category");
+          const activeSwatch = panel.querySelector(".js-edit-color.active");
+
+          const newName = nameInput.value.trim().replace(/\s+/g, " ").slice(0, 36);
+          if (!newName) { showToast("Name cannot be empty."); return; }
+
+          if (activeHabits().some(h => h.id !== habit.id && h.name.toLowerCase() === newName.toLowerCase())) {
+            showToast("Another habit with that name already exists."); return;
+          }
+
+          habit.name  = newName;
+          if (activeSwatch) habit.color = activeSwatch.dataset.color;
+          const rawT = parseInt(targetInput.value);
+          habit.target = (!isNaN(rawT) && rawT >= 1) ? Math.min(rawT, 999) : null;
+          habit.categoryId = catSelect.value || null;
+
+          saveState();
+          render();
+          showToast("Habit updated.");
+        });
+      });
+
+      // ── Delete panel bindings
       els.habitList.querySelectorAll(".js-open-delete").forEach(button => {
         button.addEventListener("click", () => {
-          const panel = document.getElementById(`delete-${button.dataset.id}`);
-          panel.classList.toggle("open");
+          const editPanel = document.getElementById(`edit-${button.dataset.id}`);
+          const delPanel  = document.getElementById(`delete-${button.dataset.id}`);
+          if (editPanel) editPanel.classList.remove("open");
+          delPanel.classList.toggle("open");
         });
       });
 
@@ -1799,8 +2653,21 @@ function renderQuotes(container) {
       const progressToday = habits.filter(habit => getStatus(habit, today) === "progress").length;
       const failedToday = habits.filter(habit => getStatus(habit, today) === "failed").length;
       const weekDays = getWeekDates();
-      const weekPossible = habits.length * weekDays.length;
-      const weekDone = habits.reduce((sum, habit) => sum + weekDays.filter(date => getStatus(habit, toKey(date)) === "done").length, 0);
+      
+      let weekPossible = 0;
+      let weekDone = 0;
+      habits.forEach(habit => {
+        weekDays.forEach(date => {
+          const key = toKey(date);
+          if (key >= habit.createdAt) {
+            weekPossible += 1;
+            if (getStatus(habit, key) === "done") {
+              weekDone += 1;
+            }
+          }
+        });
+      });
+
       const best = habits.reduce((max, habit) => Math.max(max, bestStreak(habit)), 0);
       const monthRate = getMonthRate(monthCursor, habits);
       const stats = [
@@ -1819,6 +2686,254 @@ function renderQuotes(container) {
           <p class="stat-label">${label}</p>
         </article>
       `).join("");
+
+      // Render Category Stats
+      if (els.categoryStatsSection) {
+        if (!habits.length) {
+          els.categoryStatsSection.innerHTML = "";
+        } else {
+          let categoryCardsHtml = "";
+          
+          state.categories.forEach(cat => {
+            const catHabits = habits.filter(h => h.categoryId === cat.id);
+            let catDone = 0;
+            let catPossible = 0;
+            const first = startOfMonth(monthCursor);
+            const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+            for (let day = 1; day <= totalDays; day += 1) {
+              const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+              catHabits.forEach(habit => {
+                if (key >= habit.createdAt) {
+                  catPossible += 1;
+                  if (getStatus(habit, key) === "done") {
+                    catDone += 1;
+                  }
+                }
+              });
+            }
+            const catRate = catPossible ? Math.round(catDone / catPossible * 100) : 0;
+            categoryCardsHtml += `
+              <div class="category-stat-card" style="--cat-color: ${cat.color}">
+                <div class="category-stat-head">
+                  <span class="category-stat-title">${escapeHtml(cat.name)}</span>
+                  <span class="category-stat-count">${catHabits.length} habit${catHabits.length === 1 ? '' : 's'}</span>
+                </div>
+                <div class="category-progress-container">
+                  <div class="category-progress-bar-bg">
+                    <div class="category-progress-bar-fill" style="width: ${catRate}%"></div>
+                  </div>
+                  <div class="category-progress-label">
+                    <span>Month Success</span>
+                    <span class="category-progress-value">${catRate}%</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          // Uncategorized
+          const uncategorizedHabits = habits.filter(h => !h.categoryId);
+          if (uncategorizedHabits.length > 0) {
+            let catDone = 0;
+            let catPossible = 0;
+            const first = startOfMonth(monthCursor);
+            const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+            for (let day = 1; day <= totalDays; day += 1) {
+              const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+              uncategorizedHabits.forEach(habit => {
+                if (key >= habit.createdAt) {
+                  catPossible += 1;
+                  if (getStatus(habit, key) === "done") {
+                    catDone += 1;
+                  }
+                }
+              });
+            }
+            const catRate = catPossible ? Math.round(catDone / catPossible * 100) : 0;
+            categoryCardsHtml += `
+              <div class="category-stat-card" style="--cat-color: #64748b">
+                <div class="category-stat-head">
+                  <span class="category-stat-title">Uncategorized</span>
+                  <span class="category-stat-count">${uncategorizedHabits.length} habit${uncategorizedHabits.length === 1 ? '' : 's'}</span>
+                </div>
+                <div class="category-progress-container">
+                  <div class="category-progress-bar-bg">
+                    <div class="category-progress-bar-fill" style="width: ${catRate}%"></div>
+                  </div>
+                  <div class="category-progress-label">
+                    <span>Month Success</span>
+                    <span class="category-progress-value">${catRate}%</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+
+          els.categoryStatsSection.innerHTML = `
+            <section class="panel board" style="margin-top: 18px;">
+              <div class="board-head">
+                <div>
+                  <h2>Category Performance</h2>
+                  <p class="stat-label">Success rates and active counts by category for this month.</p>
+                </div>
+              </div>
+              <div class="category-stats-grid">${categoryCardsHtml}</div>
+            </section>
+          `;
+        }
+      }
+
+      // Render Infographics & Milestones
+      if (els.insightsSection) {
+        if (!habits.length) {
+          els.insightsSection.innerHTML = "";
+        } else {
+          // 1. Infographics Chart
+          let chartRowsHtml = "";
+          habits.forEach(habit => {
+            let done = 0;
+            let possible = 0;
+            const first = startOfMonth(monthCursor);
+            const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+            for (let day = 1; day <= totalDays; day += 1) {
+              const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+              if (key >= habit.createdAt) {
+                possible += 1;
+                if (getStatus(habit, key) === "done") {
+                  done += 1;
+                }
+              }
+            }
+            const rate = possible ? Math.round(done / possible * 100) : 0;
+            chartRowsHtml += `
+              <div class="chart-bar-row">
+                <span class="chart-bar-name" title="${escapeHtml(habit.name)}">${escapeHtml(habit.name)}</span>
+                <div class="chart-bar-outer">
+                  <div class="chart-bar-inner" style="width: ${rate}%; background: ${habit.color}"></div>
+                </div>
+                <span class="chart-bar-percent">${rate}%</span>
+              </div>
+            `;
+          });
+
+          // 2. Achievements & Milestones
+          const milestones = [
+            { id: "spark", name: "Consistency Spark", target: 3, icon: "⚡", desc: "Achieve a 3-day streak on any active habit" },
+            { id: "builder", name: "Habit Builder", target: 7, icon: "🛠️", desc: "Achieve a 7-day streak on any active habit" },
+            { id: "force", name: "Unstoppable Force", target: 14, icon: "🔥", desc: "Achieve a 14-day streak on any active habit" },
+            { id: "master", name: "Habit Master", target: 30, icon: "👑", desc: "Achieve a 30-day streak on any active habit" }
+          ];
+
+          // Check unlocks
+          const unlockedSet = new Set();
+          milestones.forEach(m => {
+            const hasUnlocked = habits.some(h => bestStreak(h) >= m.target);
+            if (hasUnlocked) unlockedSet.add(m.id);
+          });
+
+          // Collect pacing alerts
+          let pacingAlerts = [];
+          habits.forEach(habit => {
+            const current = currentStreak(habit);
+            if (current > 0) {
+              let nextM = null;
+              let rem = 0;
+              if (current < 3) {
+                nextM = milestones[0];
+                rem = 3 - current;
+              } else if (current < 7) {
+                nextM = milestones[1];
+                rem = 7 - current;
+              } else if (current < 14) {
+                nextM = milestones[2];
+                rem = 14 - current;
+              } else if (current < 30) {
+                nextM = milestones[3];
+                rem = 30 - current;
+              }
+              if (nextM) {
+                pacingAlerts.push({
+                  habit,
+                  milestone: nextM,
+                  remaining: rem,
+                  current
+                });
+              }
+            }
+          });
+
+          // Sort pacing alerts so the closest to unlock is first
+          pacingAlerts.sort((a, b) => a.remaining - b.remaining);
+
+          let milestoneCardsHtml = "";
+          milestones.forEach(m => {
+            const isUnlocked = unlockedSet.has(m.id);
+            const isPacing = pacingAlerts.some(a => a.milestone.id === m.id);
+            const badgeClass = isUnlocked ? "unlocked" : (isPacing ? "pacing" : "");
+            const badgeIcon = isUnlocked ? "✔" : m.icon;
+            milestoneCardsHtml += `
+              <div class="milestone-card">
+                <div class="milestone-badge ${badgeClass}">${badgeIcon}</div>
+                <div class="milestone-info">
+                  <div class="milestone-name">${m.name}</div>
+                  <div class="milestone-desc">${m.desc}</div>
+                </div>
+              </div>
+            `;
+          });
+
+          let pacingBoxHtml = "";
+          if (pacingAlerts.length > 0) {
+            const top = pacingAlerts[0];
+            pacingBoxHtml = `
+              <div class="milestone-pacing-alert">
+                <strong>🎯 Unlock Forecast:</strong> Keep going! If you maintain your current streak on <strong>"${escapeHtml(top.habit.name)}"</strong> for <strong>${top.remaining} more day${top.remaining === 1 ? '' : 's'}</strong>, you will unlock the <strong>"${top.milestone.name}"</strong> achievement!
+              </div>
+            `;
+            
+            // Add a sub-list of other active streaks pacing if there's more than one
+            if (pacingAlerts.length > 1) {
+              const others = pacingAlerts.slice(1).map(alert => 
+                `<li><strong>"${escapeHtml(alert.habit.name)}"</strong> needs ${alert.remaining} more day${alert.remaining === 1 ? '' : 's'} for "${alert.milestone.name}"</li>`
+              ).join("");
+              pacingBoxHtml += `
+                <div style="font-size:11px; margin-top: 8px; color: #b45309; font-weight:600;">
+                  Other active streaks:
+                  <ul style="margin:4px 0 0 16px; padding:0;">${others}</ul>
+                </div>
+              `;
+            }
+          } else {
+            pacingBoxHtml = `
+              <div class="milestone-pacing-alert" style="background:#f1f5f9; border-color:#94a3b8; color:#475569;">
+                No active streaks currently pacing toward achievements. Complete a habit today to start a new streak!
+              </div>
+            `;
+          }
+
+          els.insightsSection.innerHTML = `
+            <section class="panel board" style="margin-top: 18px;">
+              <div class="board-head">
+                <div>
+                  <h2>Habit Insights & Achievements</h2>
+                  <p class="stat-label">Visual success metrics and achievement pacing.</p>
+                </div>
+              </div>
+              <div class="insights-container">
+                <div class="infographic-panel">
+                  <div class="infographic-title">Monthly Success Bar Chart</div>
+                  <div class="chart-bar-list">${chartRowsHtml}</div>
+                </div>
+                <div class="milestones-panel">
+                  <div class="infographic-title">Achievement Milestones</div>
+                  <div class="milestone-list">${milestoneCardsHtml}</div>
+                  ${pacingBoxHtml}
+                </div>
+              </div>
+            </section>
+          `;
+        }
+      }
     }
 
     function renderWeekly() {
@@ -1835,38 +2950,161 @@ function renderQuotes(container) {
       }
 
       const dates = weekMode === "this-week" ? getWeekDates() : getLastSevenDates();
+      const todayKey = toKey(new Date());
       const header = `
         <div class="grid-head" style="text-align:left;">Habit</div>
-        ${dates.map(date => `<div class="grid-head">${WEEKDAYS[date.getDay()]}<br>${date.getDate()}</div>`).join("")}
+        ${dates.map(date => `<button class="grid-head week-day-header" type="button" data-date="${toKey(date)}" title="View all habits for ${formatShortDate(date)}">${WEEKDAYS[date.getDay()]}<br>${date.getDate()}</button>`).join("")}
         <div class="grid-head">Rate</div>
       `;
-      const rows = habits.map(habit => {
-        const done = dates.filter(date => getStatus(habit, toKey(date)) === "done").length;
-        const rate = Math.round(done / dates.length * 100);
-        const cells = dates.map(date => {
-          const key = toKey(date);
-          const status = getStatus(habit, key);
-          const statusClass = status ? ` ${status}` : "";
-          const label = status ? STATUSES[status].short : "";
-          const noteMark = getNote(habit, key) ? '<span class="note-mark">N</span>' : "";
-          return `<button class="cell${statusClass}" type="button" style="--habit-color:${habit.color}" data-id="${habit.id}" data-date="${key}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}">${label}${noteMark}</button>`;
+
+      function renderHabitsRows(habitsToRender) {
+        return habitsToRender.map(habit => {
+          const validDates = dates.filter(date => toKey(date) >= habit.createdAt);
+          const done = validDates.filter(date => getStatus(habit, toKey(date)) === "done").length;
+          const rate = validDates.length ? Math.round(done / validDates.length * 100) : 0;
+          const cells = dates.map(date => {
+            const key = toKey(date);
+            const isBeforeCreated = key < habit.createdAt;
+            if (isBeforeCreated) {
+              return `<div class="cell-wrap"><button class="cell disabled-cell" type="button" style="--habit-color:${habit.color}" disabled>&mdash;</button><button class="cell-count-trigger" disabled style="opacity:.3">&#9660;</button></div>`;
+            }
+            const status = getStatus(habit, key);
+            const statusClass = status ? ` ${status}` : "";
+            const label = (() => {
+              const c = getCount(habit, key);
+              if (c > 0) return String(c) + (habit.target ? `/${habit.target}` : "");
+              return status ? STATUSES[status].short : "";
+            })();
+            const noteMark = getNote(habit, key) ? '<span class="note-mark">N</span>' : "";
+            const isSelected = habit.id === weeklyNoteHabitId && key === weeklyNoteDate;
+            const selectedClass = isSelected ? " selected" : "";
+            return `<div class="cell-wrap"><button class="cell${statusClass}${selectedClass}" type="button" style="--habit-color:${habit.color}" data-id="${habit.id}" data-date="${key}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}">${label}${noteMark}</button><button class="cell-count-trigger" type="button" data-id="${habit.id}" data-date="${key}" title="Set count">&#9660;</button></div>`;
+          }).join("");
+          return `
+            <div class="habit-row-name" style="--habit-color:${habit.color}"><span class="dot"></span><span>${escapeHtml(habit.name)}</span></div>
+            ${cells}
+            <div class="rate">${rate}%</div>
+          `;
         }).join("");
-        return `
-          <div class="habit-row-name" style="--habit-color:${habit.color}"><span class="dot"></span><span>${escapeHtml(habit.name)}</span></div>
-          ${cells}
-          <div class="rate">${rate}%</div>
-        `;
-      }).join("");
+      }
+
+      let rows = "";
+      state.categories.forEach(cat => {
+        const catHabits = habits.filter(h => h.categoryId === cat.id);
+        if (catHabits.length > 0) {
+          rows += `<div class="weekly-category-header" style="grid-column: span 9; --cat-color:${cat.color}"><span>${escapeHtml(cat.name)}</span></div>`;
+          rows += renderHabitsRows(catHabits);
+        }
+      });
+
+      const uncategorized = habits.filter(h => !h.categoryId);
+      if (uncategorized.length > 0) {
+        rows += `<div class="weekly-category-header" style="grid-column: span 9; --cat-color:#64748b"><span>Uncategorized</span></div>`;
+        rows += renderHabitsRows(uncategorized);
+      }
 
       els.weeklyContent.innerHTML = `<div class="weekly-wrap"><div class="weekly-grid">${header}${rows}</div></div>`;
-      els.weeklyContent.querySelectorAll(".cell").forEach(cell => {
+
+      // Cell click: select cell for notes on first click, cycle status on subsequent click
+      els.weeklyContent.querySelectorAll(".cell:not(.disabled-cell)").forEach(cell => {
         cell.addEventListener("click", () => {
+          selectedWeekDate = "";
+          clearWeeklyColumnSelection();
+          
+          const isAlreadySelected = (weeklyNoteHabitId === cell.dataset.id && weeklyNoteDate === cell.dataset.date);
+          
           weeklyNoteHabitId = cell.dataset.id;
           weeklyNoteDate = cell.dataset.date;
-          cycleHabitDate(cell.dataset.id, cell.dataset.date);
+          
+          if (isAlreadySelected) {
+            cycleHabitDate(cell.dataset.id, cell.dataset.date);
+          } else {
+            renderWeekly();
+            const input = document.getElementById("weeklyNote");
+            if (input) {
+              input.focus();
+              input.select();
+            }
+          }
         });
       });
-      renderWeeklyNoteEditor();
+
+      // Green trigger click: open count popover
+      els.weeklyContent.querySelectorAll(".cell-count-trigger:not([disabled])").forEach(trigger => {
+        trigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const wrap = trigger.closest(".cell-wrap");
+          const habitId = trigger.dataset.id;
+          const dateKey = trigger.dataset.date;
+          const habit = getHabit(habitId);
+          if (!habit) return;
+
+          // Close any existing popover
+          closeCountPopover();
+
+          const currentCount = getCount(habit, dateKey);
+          const popover = document.createElement("div");
+          popover.className = "count-popover";
+          popover.innerHTML = `
+            <label>COUNT FOR ${formatShortDate(parseKey(dateKey)).toUpperCase()}</label>
+            <input type="number" min="0" max="999" value="${currentCount}" class="js-popover-count" autofocus>
+            <button class="btn btn-primary js-popover-save" type="button">Set</button>
+          `;
+          wrap.appendChild(popover);
+          activeCountPopover = popover;
+
+          const input = popover.querySelector(".js-popover-count");
+          const saveBtn = popover.querySelector(".js-popover-save");
+          input.focus();
+          input.select();
+
+          const doSave = () => {
+            const val = parseInt(input.value);
+            const count = (!isNaN(val) && val >= 0) ? Math.min(val, 999) : 0;
+            setCount(habit, dateKey, count);
+            closeCountPopover();
+            renderWeekly();
+          };
+
+          saveBtn.addEventListener("click", doSave);
+          input.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter") doSave();
+            if (ev.key === "Escape") closeCountPopover();
+          });
+        });
+      });
+
+      // Day-header click: select column, show all-habits notes panel
+      els.weeklyContent.querySelectorAll(".week-day-header").forEach(header => {
+        header.addEventListener("click", () => {
+          if (selectedWeekDate === header.dataset.date) {
+            selectedWeekDate = "";
+            clearWeeklyColumnSelection();
+            els.weeklyInspector.innerHTML = "";
+          } else {
+            selectedWeekDate = header.dataset.date;
+            weeklyNoteHabitId = "";
+            weeklyNoteDate = "";
+            applyWeeklyColumnSelection(selectedWeekDate);
+            renderWeeklyDayNotes(selectedWeekDate);
+          }
+        });
+      });
+
+      // Re-apply column highlight if a date was already selected
+      if (selectedWeekDate && dates.some(d => toKey(d) === selectedWeekDate)) {
+        applyWeeklyColumnSelection(selectedWeekDate);
+        renderWeeklyDayNotes(selectedWeekDate);
+      } else {
+        renderWeeklyNoteEditor();
+      }
+    }
+
+    function closeCountPopover() {
+      if (activeCountPopover) {
+        activeCountPopover.remove();
+        activeCountPopover = null;
+      }
     }
 
     function renderWeeklyNoteEditor() {
@@ -1878,12 +3116,84 @@ function renderQuotes(container) {
       els.weeklyInspector.innerHTML = `
         <div class="note-editor">
           <label for="weeklyNote">${escapeHtml(habit.name)} note - ${formatLongDate(parseKey(weeklyNoteDate))}</label>
-          <input id="weeklyNote" maxlength="180" value="${escapeHtml(getNote(habit, weeklyNoteDate))}" placeholder="Add a note for this day">
+          <input id="weeklyNote" maxlength="180" value="${escapeHtml(getNote(habit, weeklyNoteDate))}" placeholder="Add a note for this day. Press Enter to save.">
         </div>
       `;
-      els.weeklyInspector.querySelector("#weeklyNote").addEventListener("input", event => {
-        saveHabitDateNote(habit.id, weeklyNoteDate, event.target.value);
+      const input = els.weeklyInspector.querySelector("#weeklyNote");
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          const noteVal = input.value.trim();
+          saveHabitDateNote(habit.id, weeklyNoteDate, noteVal);
+          showToast(`Note saved for "${habit.name}" on ${formatShortDate(parseKey(weeklyNoteDate))}`);
+          renderWeekly();
+        }
       });
+    }
+
+    function applyWeeklyColumnSelection(dateKey) {
+      clearWeeklyColumnSelection();
+      const header = els.weeklyContent.querySelector(`.week-day-header[data-date="${dateKey}"]`);
+      if (header) header.classList.add("selected");
+      els.weeklyContent.querySelectorAll(`.cell[data-date="${dateKey}"]`).forEach(cell => {
+        cell.classList.add("col-selected");
+      });
+    }
+
+    function clearWeeklyColumnSelection() {
+      els.weeklyContent.querySelectorAll(".week-day-header.selected").forEach(h => h.classList.remove("selected"));
+      els.weeklyContent.querySelectorAll(".cell.col-selected").forEach(c => c.classList.remove("col-selected"));
+    }
+
+    function renderWeeklyDayNotes(dateKey) {
+      const habits = activeHabits();
+      const date = parseKey(dateKey);
+      const entries = habits.map(habit => {
+        const status = getStatus(habit, dateKey);
+        const note = getNote(habit, dateKey);
+        const count = getCount(habit, dateKey);
+        const target = habit.target;
+        return {
+          id: habit.id,
+          name: habit.name,
+          color: habit.color,
+          status,
+          note,
+          count,
+          target
+        };
+      });
+
+      const heading = date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+      els.weeklyInspector.innerHTML = `
+        <div class="day-notes-panel">
+          <h3>${heading}</h3>
+          ${entries.map(e => {
+            const statusBg = e.status === "done" ? e.color : e.status === "progress" ? "#facc15" : e.status === "failed" ? "#dc2626" : "transparent";
+            const statusColor = e.status === "progress" ? "#5f3b00" : "#fff";
+            const statusLabel = e.status ? STATUSES[e.status].label : "Pending";
+            const hasCounter = e.target != null && e.target >= 1 || e.count > 0;
+            const counterHtml = hasCounter ? `<span style="font-size:11px;color:var(--muted);margin-left:6px;font-weight:600;">(${e.count}${e.target ? '/' + e.target : ''})</span>` : '';
+            return `
+              <div class="day-note-row" style="--habit-color:${e.color}">
+                <div class="day-note-meta">
+                  <span style="width:10px;height:10px;border-radius:50%;background:${e.color};flex-shrink:0;display:inline-block;"></span>
+                  <span style="font-size:13px;font-weight:800;">${escapeHtml(e.name)}</span>
+                  ${counterHtml}
+                  ${e.status
+                    ? `<span class="day-note-status-pill" style="background:${statusBg};color:${statusColor}">${statusLabel}</span>`
+                    : `<span class="day-note-status-pill" style="background:#eef2f7;color:var(--muted)">Pending</span>`
+                  }
+                </div>
+                ${e.note
+                  ? `<div class="day-note-text">&ldquo;${escapeHtml(e.note)}&rdquo;</div>`
+                  : `<div class="day-note-empty">No note for this day</div>`
+                }
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
     }
 
     function renderStreakSection() {
@@ -1956,7 +3266,17 @@ function renderQuotes(container) {
         summary.failed += getMonthStatusCount(monthCursor, habit, "failed");
         return summary;
       }, { done: 0, progress: 0, failed: 0 });
-      const possible = totalDays * selectedHabits.length;
+      
+      let possible = 0;
+      const first = startOfMonth(monthCursor);
+      for (let day = 1; day <= totalDays; day += 1) {
+        const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
+        selectedHabits.forEach(habit => {
+          if (key >= habit.createdAt) {
+            possible += 1;
+          }
+        });
+      }
       const stats = monthMode === "overall"
         ? [
             ["Habits", habits.length],
@@ -2007,15 +3327,18 @@ function renderQuotes(container) {
       }
 
       const habit = getHabit(monthMode);
-      const status = habit ? getStatus(habit, key) : "";
-      const note = habit ? getNote(habit, key) : "";
-      const statusClass = status ? ` ${status === "done" ? "complete" : status}` : "";
-      const statusColor = status === "done" ? habit.color : status ? STATUSES[status].color : "#eef2f7";
-      const textColor = status === "done" || status === "failed" ? "#fff" : "#18212f";
+      if (!habit) return "";
+      const isLocked = key < habit.createdAt;
+      const status = isLocked ? "" : getStatus(habit, key);
+      const note = isLocked ? "" : getNote(habit, key);
+      const statusClass = isLocked ? " disabled-cell" : (status ? ` ${status === "done" ? "complete" : status}` : "");
+      const statusColor = isLocked ? "#f3f4f6" : (status === "done" ? habit.color : status ? STATUSES[status].color : "#eef2f7");
+      const textColor = isLocked ? "#9ca3af" : (status === "done" || status === "failed" ? "#fff" : "#18212f");
+      const disabledAttr = isLocked ? "disabled" : "";
       return `
-        <button class="day${statusClass}" type="button" data-date="${key}" style="background:${statusColor}; color:${textColor}" title="${habit ? escapeHtml(habit.name) : "Habit"} - ${formatShortDate(date)}">
+        <button class="day${statusClass}" type="button" data-date="${key}" style="background:${statusColor}; color:${textColor}" title="${escapeHtml(habit.name)} - ${formatShortDate(date)}${isLocked ? " (Locked)" : ""}" ${disabledAttr}>
           <span class="day-num">${date.getDate()}${isToday ? '<span class="today-mark"></span>' : ""}${note ? '<span class="note-mark">N</span>' : ""}</span>
-          <span class="day-score">${status ? STATUSES[status].short : "Open"}</span>
+          <span class="day-score">${isLocked ? "&mdash;" : (status ? STATUSES[status].short : "Open")}</span>
         </button>
       `;
     }
@@ -2033,32 +3356,48 @@ function renderQuotes(container) {
           els.inspector.classList.remove("open");
           return;
         }
-        const status = getStatus(habit, selectedDate);
-        const note = getNote(habit, selectedDate);
+        const isLocked = selectedDate < habit.createdAt;
+        const status = isLocked ? "" : getStatus(habit, selectedDate);
+        const note = isLocked ? "" : getNote(habit, selectedDate);
+        const count = isLocked ? 0 : getCount(habit, selectedDate);
+        const hasTarget = habit.target != null && habit.target >= 1;
         els.inspector.classList.add("open");
         els.inspector.innerHTML = `
           <div class="section-title">
             <div>
-              <h3>${escapeHtml(habit.name)} - ${formatLongDate(date)}</h3>
-              <p class="stat-label">Update the status or add a note for this day.</p>
+              <h3>${escapeHtml(habit.name)} &mdash; ${formatLongDate(date)}</h3>
+              <p class="stat-label">${isLocked ? '<strong style="color:#dc2626">Locked: before creation date</strong>' : 'Update the status or add a note for this day.'}</p>
             </div>
           </div>
           <div class="row">
-            <button class="status-btn progress${status === "progress" ? " active" : ""} js-month-status" type="button" data-status="progress">In progress</button>
-            <button class="status-btn done${status === "done" ? " active" : ""} js-month-status" type="button" data-status="done" style="--habit-color:${habit.color}">Done</button>
-            <button class="status-btn failed${status === "failed" ? " active" : ""} js-month-status" type="button" data-status="failed">Failed</button>
+            <button class="status-btn progress${status === "progress" ? " active" : ""} js-month-status" type="button" data-status="progress"${isLocked ? " disabled" : ""}>In progress</button>
+            <button class="status-btn done${status === "done" ? " active" : ""} js-month-status" type="button" data-status="done" style="--habit-color:${habit.color}"${isLocked ? " disabled" : ""}>Done</button>
+            <button class="status-btn failed${status === "failed" ? " active" : ""} js-month-status" type="button" data-status="failed"${isLocked ? " disabled" : ""}>Failed</button>
           </div>
+          ${(hasTarget || count > 0) ? `
+          <div class="count-row" style="margin-top:12px;">
+            <span class="count-label">Count</span>
+            <button class="count-btn js-month-count-dec" type="button" data-id="${habit.id}"${isLocked ? " disabled" : ""}>&minus;</button>
+            <span class="count-display">${count}${hasTarget ? '<span class="count-frac"> / ' + habit.target + '</span>' : ''}</span>
+            <button class="count-btn js-month-count-inc" type="button" data-id="${habit.id}"${isLocked ? " disabled" : ""}>+</button>
+          </div>` : ""}
           <div class="note-editor">
             <label for="monthNote">${escapeHtml(habit.name)} note</label>
-            <input id="monthNote" maxlength="180" value="${escapeHtml(note)}" placeholder="Add a note for this day">
+            <input id="monthNote" maxlength="180" value="${escapeHtml(note)}"${isLocked ? " disabled" : ""} placeholder="${isLocked ? "Cannot add notes before creation date" : "Add a note for this day"}">
           </div>
         `;
         els.inspector.querySelectorAll(".js-month-status").forEach(button => {
           button.addEventListener("click", () => setHabitDateStatus(habit.id, selectedDate, button.dataset.status));
         });
-        els.inspector.querySelector("#monthNote").addEventListener("input", event => {
-          saveHabitDateNote(habit.id, selectedDate, event.target.value);
-        });
+        if (!isLocked) {
+          els.inspector.querySelector("#monthNote").addEventListener("input", event => {
+            saveHabitDateNote(habit.id, selectedDate, event.target.value);
+          });
+          const incBtn = els.inspector.querySelector(".js-month-count-inc");
+          const decBtn = els.inspector.querySelector(".js-month-count-dec");
+          if (incBtn) incBtn.addEventListener("click", () => { setCount(habit, selectedDate, getCount(habit, selectedDate) + 1); render(); });
+          if (decBtn) decBtn.addEventListener("click", () => { setCount(habit, selectedDate, Math.max(0, getCount(habit, selectedDate) - 1)); render(); });
+        }
         return;
       }
       const completed = habits.filter(habit => getStatus(habit, selectedDate) === "done").length;
@@ -2075,26 +3414,28 @@ function renderQuotes(container) {
         </div>
         <div class="inspector-grid">
           ${habits.map(habit => {
-            const status = getStatus(habit, selectedDate);
-            const note = getNote(habit, selectedDate);
+            const isLocked = selectedDate < habit.createdAt;
+            const status = isLocked ? "" : getStatus(habit, selectedDate);
+            const note = isLocked ? "" : getNote(habit, selectedDate);
             const color = status === "done" ? habit.color : status ? STATUSES[status].color : "";
-            const label = status ? STATUSES[status].short : "Open";
-            const solid = status ? `style="background:${color}; color:${status === "progress" ? "#5f3b00" : "#fff"}"` : "";
+            const label = isLocked ? "Locked" : (status ? STATUSES[status].short : "Open");
+            const solid = status && !isLocked ? `style="background:${color}; color:${status === "progress" ? "#5f3b00" : "#fff"}"` : "";
+            const disabledAttr = isLocked ? "disabled" : "";
             return `
               <div class="mini-stat">
-                <button class="btn ${status ? "btn-primary" : "btn-ghost"} js-inspect-toggle" type="button" data-id="${habit.id}" ${solid}>
+                <button class="btn ${status && !isLocked ? "btn-primary" : "btn-ghost"} js-inspect-toggle" type="button" data-id="${habit.id}" ${solid} ${disabledAttr}>
                   ${escapeHtml(habit.name)} - ${label}
                 </button>
-                <input class="js-inspect-note" data-id="${habit.id}" maxlength="150" value="${escapeHtml(note)}" placeholder="Add a note">
+                <input class="js-inspect-note" data-id="${habit.id}" maxlength="150" value="${escapeHtml(note)}"${disabledAttr} placeholder="${isLocked ? "Locked" : "Add a note"}">
               </div>
             `;
           }).join("")}
         </div>
       `;
-      els.inspector.querySelectorAll(".js-inspect-toggle").forEach(button => {
+      els.inspector.querySelectorAll(".js-inspect-toggle:not([disabled])").forEach(button => {
         button.addEventListener("click", () => cycleHabitDate(button.dataset.id, selectedDate));
       });
-      els.inspector.querySelectorAll(".js-inspect-note").forEach(input => {
+      els.inspector.querySelectorAll(".js-inspect-note:not([disabled])").forEach(input => {
         input.addEventListener("input", () => saveHabitDateNote(input.dataset.id, selectedDate, input.value));
       });
     }
@@ -2102,6 +3443,7 @@ function renderQuotes(container) {
     function cycleHabitDate(id, dateKey) {
       const habit = getHabit(id);
       if (!habit) return;
+      if (dateKey < habit.createdAt) return;
       const current = getStatus(habit, dateKey);
       if (!current) {
         setLogStatus(habit, dateKey, "progress");
@@ -2119,6 +3461,7 @@ function renderQuotes(container) {
     function setHabitDateStatus(id, dateKey, status) {
       const habit = getHabit(id);
       if (!habit) return;
+      if (dateKey < habit.createdAt) return;
       if (getStatus(habit, dateKey) === status) {
         setLogStatus(habit, dateKey, "");
       } else {
@@ -2136,6 +3479,7 @@ function renderQuotes(container) {
     function saveHabitDateNote(id, dateKey, note) {
       const habit = getHabit(id);
       if (!habit) return;
+      if (dateKey < habit.createdAt) return;
       setLogNote(habit, dateKey, note);
       saveState();
     }
@@ -2170,11 +3514,20 @@ function renderQuotes(container) {
       const first = startOfMonth(date);
       const totalDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
       let done = 0;
+      let possible = 0;
       for (let day = 1; day <= totalDays; day += 1) {
-        const key = toKey(new Date(first.getFullYear(), first.getMonth(), day));
-        done += habits.filter(habit => getStatus(habit, key) === "done").length;
+        const d = new Date(first.getFullYear(), first.getMonth(), day);
+        const key = toKey(d);
+        habits.forEach(habit => {
+          if (key >= habit.createdAt) {
+            possible += 1;
+            if (getStatus(habit, key) === "done") {
+              done += 1;
+            }
+          }
+        });
       }
-      return Math.round(done / (totalDays * habits.length) * 100);
+      return possible ? Math.round(done / possible * 100) : 0;
     }
 
     function getMonthStatusCount(date, habit, status) {
@@ -2248,12 +3601,14 @@ function renderQuotes(container) {
       if (value && typeof value === "object") {
         return {
           status: normalizeStatus(value.status),
-          note: String(value.note || "").trim()
+          note: String(value.note || "").trim(),
+          count: Number(value.count) || 0
         };
       }
       return {
         status: normalizeStatus(value),
-        note: ""
+        note: "",
+        count: 0
       };
     }
 
@@ -2270,14 +3625,16 @@ function renderQuotes(container) {
     }
 
     function writeLogEntry(habit, dateKey, entry) {
-      if (!entry.status && !entry.note) {
+      const count = Number(entry.count) || 0;
+      // Only prune the key when status, note AND count are all empty/zero
+      if (!entry.status && !entry.note && !count) {
         delete habit.log[dateKey];
         return;
       }
-      habit.log[dateKey] = {
-        status: entry.status,
-        note: entry.note
-      };
+      habit.log[dateKey] = Object.assign(
+        { status: entry.status, note: entry.note },
+        count > 0 ? { count } : {}
+      );
     }
 
     function normalizeStatus(value) {
@@ -2291,17 +3648,43 @@ function renderQuotes(container) {
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { habits: [], quotes: [] };
+        if (!raw) return { habits: [], quotes: [], categories: [...DEFAULT_CATEGORIES] };
         const parsed = JSON.parse(raw);
-        if (!parsed || !Array.isArray(parsed.habits)) return { habits: [], quotes: [] };
+        if (!parsed || !Array.isArray(parsed.habits)) return { habits: [], quotes: [], categories: [...DEFAULT_CATEGORIES] };
         return normalizeStoredState(parsed);
       } catch (error) {
-        return { habits: [], quotes: [] };
+        return { habits: [], quotes: [], categories: [...DEFAULT_CATEGORIES] };
       }
     }
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // ── Hybrid count helpers ───────────────────────────────────
+    function getCount(habit, dateKey) {
+      const raw = habit.log[dateKey];
+      if (!raw || typeof raw !== "object") return 0;
+      return Number(raw.count) || 0;
+    }
+
+    // setCount saves the count WITHOUT auto-deriving status.
+    // The user retains full control over status independently.
+    function setCount(habit, dateKey, count) {
+      if (dateKey < habit.createdAt) return;
+      const clamped = Math.max(0, count);
+      const existing = habit.log[dateKey];
+      const status = (existing && typeof existing === "object") ? (existing.status || "") : normalizeStatus(existing);
+      const note   = (existing && typeof existing === "object") ? String(existing.note || "").trim() : "";
+      if (!status && !note && clamped === 0) {
+        delete habit.log[dateKey];
+      } else {
+        habit.log[dateKey] = Object.assign(
+          { status, note },
+          clamped > 0 ? { count: clamped } : {}
+        );
+      }
+      saveState();
     }
 
     function loadMeta() {
@@ -2356,6 +3739,11 @@ function renderQuotes(container) {
             text: String(quote && quote.text ? quote.text : "").trim().slice(0, 140)
           }))
           .filter(quote => quote.text) : [],
+        categories: Array.isArray(candidate.categories) ? candidate.categories.map(c => ({
+          id: c && c.id ? c.id : makeId(),
+          name: String(c && c.name ? c.name : "").trim().slice(0, 24),
+          color: c && c.color ? c.color : CATEGORY_COLORS[0]
+        })).filter(c => c.name) : [...DEFAULT_CATEGORIES],
         habits: habits.map((habit, index) => {
           const item = habit || {};
           const log = {};
@@ -2363,15 +3751,23 @@ function renderQuotes(container) {
           Object.keys(sourceLog).forEach(key => {
             const raw = sourceLog[key];
             const status = normalizeStatus(raw && typeof raw === "object" ? raw.status : raw);
-            const note = raw && typeof raw === "object" ? String(raw.note || "").trim().slice(0, 180) : "";
-            if (status || note) log[key] = { status, note };
+            const note   = raw && typeof raw === "object" ? String(raw.note || "").trim().slice(0, 180) : "";
+            const count  = raw && typeof raw === "object" ? (Number(raw.count) || 0) : 0;
+            if (status || note || count > 0) {
+              log[key] = Object.assign({ status, note }, count > 0 ? { count } : {});
+            }
           });
+          // Normalize target: keep numeric value >= 1, else null
+          const rawTarget = Number(item.target);
+          const target = (!isNaN(rawTarget) && rawTarget >= 1) ? Math.round(rawTarget) : null;
           return {
             id: item.id || makeId(),
             name: String(item.name || `Habit ${index + 1}`).trim().slice(0, 36),
             color: COLORS.includes(item.color) ? item.color : COLORS[index % COLORS.length],
             createdAt: item.createdAt || toKey(new Date()),
             archived: Boolean(item.archived),
+            target,
+            categoryId: item.categoryId || null,
             log
           };
         })
@@ -2438,8 +3834,28 @@ function renderQuotes(container) {
     }
 
     function updateGreeting() {
-      els.dayPart.textContent = getDayPart();
-      els.todayText.textContent = formatLongDate(new Date());
+      const now = new Date();
+      const FULL_WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const FULL_MONTHS   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+      // Day-hero elements
+      if (els.dayHeroWeekday) els.dayHeroWeekday.textContent = FULL_WEEKDAYS[now.getDay()];
+      if (els.dayHeroNumber)  els.dayHeroNumber.textContent  = now.getDate();
+      if (els.dayHeroMonth)   els.dayHeroMonth.textContent   = FULL_MONTHS[now.getMonth()];
+      if (els.dayHeroYear)    els.dayHeroYear.textContent    = now.getFullYear();
+
+      // Day-of-year badge
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff  = now - start + (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
+      const dayOfYear = Math.floor(diff / 86400000);
+      const daysInYear = (now.getFullYear() % 4 === 0 && (now.getFullYear() % 100 !== 0 || now.getFullYear() % 400 === 0)) ? 366 : 365;
+      if (els.dayOfYear) els.dayOfYear.textContent = `Day ${dayOfYear} of ${daysInYear}`;
+
+      // Existing today-card date text
+      if (els.todayText) els.todayText.textContent = formatLongDate(now);
+
+      // Greet line (if still present in DOM)
+      if (els.dayPart) els.dayPart.textContent = getDayPart();
     }
 
     function getDayPart() {
@@ -2476,6 +3892,153 @@ function renderQuotes(container) {
         parseInt(value.slice(2, 4), 16),
         parseInt(value.slice(4, 6), 16)
       ];
+    }
+    // ── Category management ─────────────────────────
+    function renderCategoryManageList() {
+      if (!state.categories.length) {
+        els.categoryManageList.innerHTML = `<div class="empty"><p>No categories yet. Add one above.</p></div>`;
+        return;
+      }
+      els.categoryManageList.innerHTML = state.categories.map(cat => `
+        <div class="category-item" style="--cat-color:${cat.color}">
+          <span class="category-dot-sm"></span>
+          <span class="category-item-name">${escapeHtml(cat.name)}</span>
+          <button class="btn btn-ghost js-remove-category" type="button" data-id="${cat.id}" style="min-height:30px;font-size:12px;">Remove</button>
+        </div>
+      `).join("");
+
+      els.categoryManageList.querySelectorAll(".js-remove-category").forEach(btn => {
+        btn.addEventListener("click", () => {
+          // Unassign habits from this category
+          state.habits.forEach(h => { if (h.categoryId === btn.dataset.id) h.categoryId = null; });
+          state.categories = state.categories.filter(c => c.id !== btn.dataset.id);
+          saveState();
+          render();
+          showToast("Category removed.");
+        });
+      });
+    }
+
+    function renderCategoryOptions() {
+      const options = `<option value="">Uncategorized</option>` +
+        state.categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+      if (els.habitCategory) els.habitCategory.innerHTML = options;
+    }
+
+    // ── Preview panel ────────────────────────────
+    function showPreview() {
+      if (!previewHabit) return;
+      const cat = previewHabit.categoryId ? state.categories.find(c => c.id === previewHabit.categoryId) : null;
+      const catName = cat ? cat.name : "Uncategorized";
+      const catOptions = `<option value="">Uncategorized</option>` + state.categories.map(c =>
+        `<option value="${c.id}"${previewHabit.categoryId === c.id ? ' selected' : ''}>${escapeHtml(c.name)}</option>`
+      ).join("");
+      const paletteHtml = COLORS.map(c =>
+        `<button class="swatch js-preview-color${c === previewHabit.color ? ' active' : ''}" type="button" style="background:${c}" data-color="${c}"></button>`
+      ).join("");
+      els.previewPanel.innerHTML = `
+        <div class="preview-heading">✨ Review before creating</div>
+        <div class="preview-card">
+          <div class="habit-icon" style="background:${previewHabit.color};width:42px;height:42px;display:grid;place-items:center;border-radius:10px;color:#fff;font-size:18px;font-weight:900;">${escapeHtml(previewHabit.name.slice(0, 1).toUpperCase())}</div>
+          <div>
+            <div style="font-weight:800;font-size:15px;">${escapeHtml(previewHabit.name)}</div>
+            <div class="preview-detail">Target: <strong>${previewHabit.target || 'None'}</strong> &middot; Category: <strong>${escapeHtml(catName)}</strong> &middot; Starts: <strong>${previewHabit.createdAt}</strong></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="preview-field">
+            <label>Name</label>
+            <input id="previewName" maxlength="36" value="${escapeHtml(previewHabit.name)}">
+          </div>
+          <div class="preview-field">
+            <label>Target count</label>
+            <input id="previewTarget" type="number" min="1" max="999" value="${previewHabit.target || ''}" placeholder="Optional">
+          </div>
+        </div>
+        <div class="preview-field">
+          <label>Category</label>
+          <select id="previewCategory">${catOptions}</select>
+        </div>
+        <div class="preview-field">
+          <label>Color</label>
+          <div class="palette">${paletteHtml}</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="btn btn-primary" id="confirmPreview" type="button">✔ Confirm & Create</button>
+          <button class="btn btn-ghost" id="cancelPreview" type="button">Cancel</button>
+        </div>
+      `;
+      els.previewPanel.classList.add("open");
+
+      // Color swatches
+      els.previewPanel.querySelectorAll(".js-preview-color").forEach(swatch => {
+        swatch.addEventListener("click", () => {
+          els.previewPanel.querySelectorAll(".js-preview-color").forEach(s => s.classList.remove("active"));
+          swatch.classList.add("active");
+          previewHabit.color = swatch.dataset.color;
+        });
+      });
+
+      // Confirm
+      document.getElementById("confirmPreview").addEventListener("click", () => {
+        const nameInput = document.getElementById("previewName");
+        const targetInput = document.getElementById("previewTarget");
+        const catSelect = document.getElementById("previewCategory");
+        const activeSwatch = els.previewPanel.querySelector(".js-preview-color.active");
+
+        const name = nameInput.value.trim().replace(/\s+/g, " ");
+        if (!name) { showToast("Name cannot be empty."); return; }
+        if (activeHabits().some(h => h.name.toLowerCase() === name.toLowerCase())) {
+          showToast("That habit already exists."); return;
+        }
+        const rawT = parseInt(targetInput.value);
+        previewHabit.name = name;
+        previewHabit.target = (!isNaN(rawT) && rawT >= 1) ? Math.min(rawT, 999) : null;
+        previewHabit.categoryId = catSelect.value || null;
+        if (activeSwatch) previewHabit.color = activeSwatch.dataset.color;
+        previewHabit.createdAt = toKey(new Date()); // Always today
+
+        state.habits.push(previewHabit);
+        previewHabit = null;
+        els.previewPanel.classList.remove("open");
+        els.previewPanel.innerHTML = "";
+        els.habitName.value = "";
+        els.habitTarget.value = "";
+        if (els.habitCategory) els.habitCategory.value = "";
+        saveState();
+        render();
+        showToast("Habit created!");
+      });
+
+      // Cancel
+      document.getElementById("cancelPreview").addEventListener("click", () => {
+        previewHabit = null;
+        els.previewPanel.classList.remove("open");
+        els.previewPanel.innerHTML = "";
+      });
+    }
+
+    // ── Priority reordering ───────────────────────
+    function moveHabit(id, direction) {
+      const habit = getHabit(id);
+      if (!habit) return;
+      const active = state.habits.filter(h => !h.archived);
+      const catHabits = active.filter(h => h.categoryId === habit.categoryId);
+      const idx = catHabits.findIndex(h => h.id === id);
+      if (idx < 0) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= catHabits.length) return;
+
+      const partner = catHabits[targetIdx];
+      const realIdxA = state.habits.findIndex(h => h.id === habit.id);
+      const realIdxB = state.habits.findIndex(h => h.id === partner.id);
+      if (realIdxA >= 0 && realIdxB >= 0) {
+        const temp = state.habits[realIdxA];
+        state.habits[realIdxA] = state.habits[realIdxB];
+        state.habits[realIdxB] = temp;
+        saveState();
+        render();
+      }
     }
   </script>
 </body>
